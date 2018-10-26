@@ -1,22 +1,25 @@
 package com.joseuji.smartcampus.Activities;
 
 import android.content.pm.PackageManager;
+import android.location.LocationManager;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.esri.arcgisruntime.data.FeatureTable;
 import com.esri.arcgisruntime.data.Geodatabase;
 import com.esri.arcgisruntime.layers.FeatureLayer;
 import com.esri.arcgisruntime.loadable.LoadStatus;
+import com.esri.arcgisruntime.location.AndroidLocationDataSource;
 import com.esri.arcgisruntime.mapping.ArcGISMap;
+import com.esri.arcgisruntime.mapping.Basemap;
 import com.esri.arcgisruntime.mapping.view.LocationDisplay;
 import com.esri.arcgisruntime.mapping.view.MapView;
-import com.joseuji.smartcampus.ClientWeb.RetrofitAPI;
+import com.joseuji.smartcampus.ClientWeb.Consultas;
+import com.joseuji.smartcampus.ClientWeb.Controller;
 import com.joseuji.smartcampus.ClientWeb.RetrofitServices;
 import com.joseuji.smartcampus.Models.Ubicaciones;
 import com.joseuji.smartcampus.R;
@@ -24,10 +27,7 @@ import com.joseuji.smartcampus.R;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
-
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
+import java.util.List;
 
 import static android.Manifest.permission.ACCESS_COARSE_LOCATION;
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
@@ -39,7 +39,8 @@ public class MainActivity extends AppCompatActivity {
     private RetrofitServices retrofitServices;
     private MapView mMapView;
     private LocationDisplay mLocationDisplay;
-
+    List<Ubicaciones>ubicaciones;
+    Controller controller;
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -50,12 +51,16 @@ public class MainActivity extends AppCompatActivity {
         //----------------------------------------------------------------------------------
         setContentView(R.layout.activity_main);
         mMapView = findViewById(R.id.mapView);
-        retrofitServices = RetrofitAPI.getApi().create(RetrofitServices.class);
+        controller = new Controller();
+        retrofitServices=controller.start();
         //----------------------------------------------------------------------------------
         //                          LLAMADA A LOS MÉTODOS
         //----------------------------------------------------------------------------------
         setupMap();
         setupLocationDisplay();
+
+        ubicaciones=Consultas.getUbicaciones(retrofitServices,getApplicationContext());
+
         //----------------------------------------------------------------------------------
 
     }
@@ -66,14 +71,13 @@ public class MainActivity extends AppCompatActivity {
     private void setupMap() {
         if (mMapView != null) {
 
-            // If online basemap is desirable, uncomment the following lines
-//            Basemap.Type basemapType = Basemap.Type.DARK_GRAY_CANVAS_VECTOR;
-//            double latitude = 40;
-//            double longitude = 0;
-//            int levelOfDetail = 4;
-//            ArcGISMap map = new ArcGISMap(basemapType, latitude, longitude, levelOfDetail);
+//             If online basemap is desirable, uncomment the following lines
+            Basemap.Type basemapType = Basemap.Type.DARK_GRAY_CANVAS_VECTOR;
+            double latitude = 40;
+            double longitude = 0;
+            int levelOfDetail = 4;
+            ArcGISMap map = new ArcGISMap(basemapType, latitude, longitude, levelOfDetail);
 
-            ArcGISMap map = new ArcGISMap();
             mMapView.setMap(map);
 
             // The following line should work for most phones, but just to be sure...
@@ -178,5 +182,12 @@ public class MainActivity extends AppCompatActivity {
         } else {
             Toast.makeText(MainActivity.this, R.string.location_permission_denied, Toast.LENGTH_SHORT).show();
         }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        ubicaciones=Consultas.getUbicaciones(retrofitServices,getApplicationContext());
+
     }
 }
