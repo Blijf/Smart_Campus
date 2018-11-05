@@ -1,6 +1,7 @@
 package com.joseuji.smartcampus.ClientWeb;
 
 import android.content.Context;
+import android.os.Debug;
 import android.widget.Toast;
 
 import com.joseuji.smartcampus.Models.Ubicaciones;
@@ -22,7 +23,7 @@ public class Consultas {
     {
         final List<Ubicaciones>ubicaciones= new ArrayList<Ubicaciones>();
 
-        Call<List<Ubicaciones>> ubicacionesCall = retrofitServices.getUbicaciones();
+        Call<List<Ubicaciones>> ubicacionesCall = retrofitServices.getUbicaciones(1);
 
         ubicacionesCall.enqueue(new Callback<List<Ubicaciones>>()  {
             @Override

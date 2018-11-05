@@ -1,5 +1,5 @@
 <resources>
     <string name="app_name">SmartCampus</string>
     <string name="action_settings">Settings</string>
-    <string name="location_permission_denied">User denied permission for device location</string>
+    <string name="location_permission_denied">Conecta la ubicación</string>
 </resources>

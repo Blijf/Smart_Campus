@@ -1,7 +1,8 @@
 package com.joseuji.smartcampus.Activities;
 
 import android.content.pm.PackageManager;
-import android.location.LocationManager;
+import android.location.Location;
+import android.location.LocationProvider;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -13,7 +14,6 @@ import com.esri.arcgisruntime.data.FeatureTable;
 import com.esri.arcgisruntime.data.Geodatabase;
 import com.esri.arcgisruntime.layers.FeatureLayer;
 import com.esri.arcgisruntime.loadable.LoadStatus;
-import com.esri.arcgisruntime.location.AndroidLocationDataSource;
 import com.esri.arcgisruntime.mapping.ArcGISMap;
 import com.esri.arcgisruntime.mapping.Basemap;
 import com.esri.arcgisruntime.mapping.view.LocationDisplay;
@@ -72,10 +72,11 @@ public class MainActivity extends AppCompatActivity {
         if (mMapView != null) {
 
 //             If online basemap is desirable, uncomment the following lines
-            Basemap.Type basemapType = Basemap.Type.DARK_GRAY_CANVAS_VECTOR;
-            double latitude = 40;
-            double longitude = 0;
-            int levelOfDetail = 4;
+            Basemap.Type basemapType = Basemap.Type.STREETS_VECTOR;
+            double latitude=39.994444;
+            double longitude = -0.068889;
+
+            int levelOfDetail = 15;
             ArcGISMap map = new ArcGISMap(basemapType, latitude, longitude, levelOfDetail);
 
             mMapView.setMap(map);
@@ -145,6 +146,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void setupLocationDisplay() {
         mLocationDisplay = mMapView.getLocationDisplay();
+
         // If a different (from default) location source is required, uncomment and make proper changes to the following line
 //        mLocationDisplay.setLocationDataSource( new AndroidLocationDataSource( this, LocationManager.NETWORK_PROVIDER, 50L, 1 ) );
 

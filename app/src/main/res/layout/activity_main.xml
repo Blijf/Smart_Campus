@@ -30,15 +30,19 @@
         <Button
             android:id="@+id/btSearch"
             android:layout_weight="20"
-            android:layout_width="35dp"
-            android:layout_height="35dp"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
             android:background="@android:drawable/ic_menu_search"
             tools:layout_editor_absoluteX="261dp"
             tools:layout_editor_absoluteY="0dp" />
 
     </LinearLayout>
 
-    <include layout="@layout/content_sample_map" />
+    <com.esri.arcgisruntime.mapping.view.MapView
+        android:id="@+id/mapView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" >
+    </com.esri.arcgisruntime.mapping.view.MapView>
 
 
 
