@@ -59,7 +59,7 @@ public class MainActivity extends AppCompatActivity {
         setupMap();
         setupLocationDisplay();
 
-        ubicaciones=Consultas.getUbicaciones(retrofitServices,getApplicationContext());
+        //ubicaciones=Consultas.getUbicaciones(retrofitServices,getApplicationContext());
 
         //----------------------------------------------------------------------------------
 
@@ -189,7 +189,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        ubicaciones=Consultas.getUbicaciones(retrofitServices,getApplicationContext());
+//        ubicaciones=Consultas.getUbicaciones(retrofitServices,getApplicationContext());
 
     }
 }
