@@ -7,6 +7,7 @@
     <color name="colorAccent">#9E9E9E</color>
     <color name="colorPrimaryText">#212121</color>
     <color name="colorsecondaryText">#757575</color>
-    <color name="colorIcons">#FFFFFF</color>
+    <color name="colorIcons">#ffffff</color>
+    <color name="colorTransparentWhite">#85ffffff</color>
     <color name="colorDivider">#BDBDBD</color>
 </resources>

@@ -1,49 +1,69 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context=".Activities.MainActivity">
 
-
-    <LinearLayout
-        android:id="@+id/linearLayout"
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:padding="10dp"
-        android:weightSum="100">
+        android:layout_height="match_parent">
 
+        <!--__________________________________________________________________________-->
+        <!--MAPA-->
+        <!--__________________________________________________________________________-->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@null"
+            >
 
-        <EditText
-            android:id="@+id/editText"
+            <com.esri.arcgisruntime.mapping.view.MapView
+                android:id="@+id/mapView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+            </com.esri.arcgisruntime.mapping.view.MapView>
+        </LinearLayout>
+        <!--__________________________________________________________________________-->
+        <!--BUSCADOR-->
+        <!--__________________________________________________________________________-->
+        <LinearLayout
+            android:id="@+id/lySearch"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="80"
-            android:ems="10"
-            android:hint=""
-            android:inputType="textPersonName"
-            android:text=""
-            tools:layout_editor_absoluteX="16dp"
-            tools:layout_editor_absoluteY="16dp" />
-
-        <Button
-            android:id="@+id/btSearch"
-            android:layout_weight="20"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:background="@android:drawable/ic_menu_search"
-            tools:layout_editor_absoluteX="261dp"
-            tools:layout_editor_absoluteY="0dp" />
-
-    </LinearLayout>
-
-    <com.esri.arcgisruntime.mapping.view.MapView
-        android:id="@+id/mapView"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" >
-    </com.esri.arcgisruntime.mapping.view.MapView>
+            android:layout_margin="10dp"
+            android:background="@color/colorTransparentWhite"
+            android:padding="10dp"
+            android:weightSum="100">
 
 
+            <EditText
+                android:id="@+id/editText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
 
-</android.support.constraint.ConstraintLayout>
+                android:layout_weight="80"
+                android:ems="10"
+                android:hint=""
+                android:inputType="textPersonName"
+                android:text="" />
+
+            <Button
+                android:id="@+id/btSearch"
+                android:layout_width="35dp"
+                android:layout_height="35dp"
+                android:layout_weight="20"
+                android:background="@android:drawable/ic_menu_search" />
+
+        </LinearLayout>
+
+
+
+    </FrameLayout>
+
+
+
+</LinearLayout>
