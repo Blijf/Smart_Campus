@@ -2,6 +2,7 @@ package com.joseuji.smartcampus.Activities;
 
 import android.content.pm.PackageManager;
 import android.location.Location;
+import android.location.LocationManager;
 import android.location.LocationProvider;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
@@ -14,6 +15,7 @@ import com.esri.arcgisruntime.data.FeatureTable;
 import com.esri.arcgisruntime.data.Geodatabase;
 import com.esri.arcgisruntime.layers.FeatureLayer;
 import com.esri.arcgisruntime.loadable.LoadStatus;
+import com.esri.arcgisruntime.location.AndroidLocationDataSource;
 import com.esri.arcgisruntime.mapping.ArcGISMap;
 import com.esri.arcgisruntime.mapping.Basemap;
 import com.esri.arcgisruntime.mapping.view.LocationDisplay;
@@ -148,12 +150,13 @@ public class MainActivity extends AppCompatActivity {
         mLocationDisplay = mMapView.getLocationDisplay();
 
         // If a different (from default) location source is required, uncomment and make proper changes to the following line
-//        mLocationDisplay.setLocationDataSource( new AndroidLocationDataSource( this, LocationManager.NETWORK_PROVIDER, 50L, 1 ) );
+        mLocationDisplay.setLocationDataSource( new AndroidLocationDataSource( this, LocationManager.NETWORK_PROVIDER, 50L, 1 ) );
 
         mLocationDisplay.addDataSourceStatusChangedListener(new LocationDisplay.DataSourceStatusChangedListener() {
             @Override
             public void onStatusChanged(LocationDisplay.DataSourceStatusChangedEvent dataSourceStatusChangedEvent) {
-                if (dataSourceStatusChangedEvent.isStarted() || dataSourceStatusChangedEvent.getError() == null) {
+                if (dataSourceStatusChangedEvent.isStarted() || dataSourceStatusChangedEvent.getError() == null)
+                {
                     return;
                 }
                 int requestPermissionsCode = 2;
@@ -163,7 +166,8 @@ public class MainActivity extends AppCompatActivity {
                         && ContextCompat.checkSelfPermission(MainActivity.this, requestPermissions[1]) == PackageManager.PERMISSION_GRANTED
                         && ContextCompat.checkSelfPermission(MainActivity.this, requestPermissions[2]) == PackageManager.PERMISSION_GRANTED)) {
                     ActivityCompat.requestPermissions(MainActivity.this, requestPermissions, requestPermissionsCode);
-                } else {
+                }
+                else {
                     String message = String.format("Error in DataSourceStatusChangedListener: %s",
                             dataSourceStatusChangedEvent.getSource().getLocationDataSource().getError().getMessage());
                     Toast.makeText(MainActivity.this, message, Toast.LENGTH_LONG).show();
@@ -179,9 +183,12 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+        if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED)
+        {
             mLocationDisplay.startAsync();
-        } else {
+        }
+        else
+        {
             Toast.makeText(MainActivity.this, R.string.location_permission_denied, Toast.LENGTH_SHORT).show();
         }
     }
@@ -190,6 +197,9 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
 //        ubicaciones=Consultas.getUbicaciones(retrofitServices,getApplicationContext());
+
+        //volvemos a reubicar la ubicación actual tras quitar de primer plano la app(fijarse en ciclo de vida)
+        setupLocationDisplay();
 
     }
 }
