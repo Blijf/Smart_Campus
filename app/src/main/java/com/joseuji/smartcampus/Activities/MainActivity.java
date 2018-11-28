@@ -13,7 +13,9 @@ import android.widget.Toast;
 
 import com.esri.arcgisruntime.data.FeatureTable;
 import com.esri.arcgisruntime.data.Geodatabase;
+import com.esri.arcgisruntime.data.ServiceFeatureTable;
 import com.esri.arcgisruntime.layers.FeatureLayer;
+import com.esri.arcgisruntime.layers.Layer;
 import com.esri.arcgisruntime.loadable.LoadStatus;
 import com.esri.arcgisruntime.location.AndroidLocationDataSource;
 import com.esri.arcgisruntime.mapping.ArcGISMap;
@@ -25,6 +27,7 @@ import com.joseuji.smartcampus.ClientWeb.Controller;
 import com.joseuji.smartcampus.ClientWeb.RetrofitServices;
 import com.joseuji.smartcampus.Models.Ubicaciones;
 import com.joseuji.smartcampus.R;
+import com.joseuji.smartcampus.Utils.SmartCampusLayers;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -35,14 +38,20 @@ import static android.Manifest.permission.ACCESS_COARSE_LOCATION;
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
 
-
 public class MainActivity extends AppCompatActivity {
 
+    /**************************************************************************************************
+     * *                                    VARIABLES
+     * *********************************************************************************************/
     private RetrofitServices retrofitServices;
     private MapView mMapView;
     private LocationDisplay mLocationDisplay;
     List<Ubicaciones>ubicaciones;
     Controller controller;
+
+    /**************************************************************************************************
+     * *                                   ONCREATE()
+     * *********************************************************************************************/
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -58,18 +67,22 @@ public class MainActivity extends AppCompatActivity {
         //----------------------------------------------------------------------------------
         //                          LLAMADA A LOS MÉTODOS
         //----------------------------------------------------------------------------------
-        setupMap();
-        setupLocationDisplay();
+        setupMap();//configuración del mapa
+        setupLocationDisplay();//ubicación
 
+        //addLayers
+        SmartCampusLayers.baseLayer(mMapView);
+
+        //----------------------------------------------------------------------------------
+        //                              CONSULTAS
+        //----------------------------------------------------------------------------------
         //ubicaciones=Consultas.getUbicaciones(retrofitServices,getApplicationContext());
-
         //----------------------------------------------------------------------------------
 
     }
-
-    //----------------------------------------------------------------------------------
-    //                          MÉTODOS DE CONFIGURACIÓN DE ESRI
-    //----------------------------------------------------------------------------------
+    /**************************************************************************************************
+     * *                                   MÉTODOS
+     * *********************************************************************************************/
     private void setupMap() {
         if (mMapView != null) {
 
@@ -82,67 +95,6 @@ public class MainActivity extends AppCompatActivity {
             ArcGISMap map = new ArcGISMap(basemapType, latitude, longitude, levelOfDetail);
 
             mMapView.setMap(map);
-
-            // The following line should work for most phones, but just to be sure...
-//            String path = getBaseContext().getExternalFilesDir(null)+"/"+getBaseContext().getResources().getResourceEntryName(R.raw.uji_levels);
-            String path = moveResFile();
-
-            if (path == null){
-                return;
-            }
-
-            final Geodatabase geodatabase = new Geodatabase(path);
-
-
-            // There are more featureTables in the geodatabase, the following are just an example
-            final int LAYER_ID_AREAS = 3;
-            final int LAYER_ID_PLAN = 4;
-            final int LAYER_ID_SHELVES = 5;
-
-            geodatabase.loadAsync();
-            geodatabase.addDoneLoadingListener(new Runnable() {
-                @Override
-                public void run() {
-                    if (geodatabase.getLoadStatus() == LoadStatus.LOADED) {
-                        addLayer(LAYER_ID_AREAS);
-                        addLayer(LAYER_ID_PLAN);
-                        addLayer(LAYER_ID_SHELVES);
-                    }
-                }
-
-                private void addLayer(int id){
-                    FeatureTable featureTable = geodatabase.getGeodatabaseFeatureTableByServiceLayerId(id);
-                    FeatureLayer featureLayer = new FeatureLayer(featureTable);
-                    featureLayer.setVisible(true);
-                    mMapView.getMap().getOperationalLayers().add(featureLayer);
-                }
-            });
-        }
-    }
-
-    // As stated above, unnecessary for most phones
-    private String moveResFile(){
-        try {
-            InputStream input = getApplicationContext().getResources().openRawResource(R.raw.uji_levels);
-            File tempFile = File.createTempFile("geodb.dgb", null, getApplicationContext().getCacheDir());
-            FileOutputStream output = new FileOutputStream(tempFile);
-
-            byte[] buffer = new byte[1024];
-            while (true) {
-                int size = input.read(buffer);
-                if (size == -1) {
-                    break;
-                }
-                output.write(buffer, 0, size);
-            }
-
-            input.close();
-            output.close();
-
-            return tempFile.getAbsolutePath();
-        }
-        catch (Exception e){
-            return null;
         }
     }
 
@@ -180,7 +132,9 @@ public class MainActivity extends AppCompatActivity {
         mLocationDisplay.startAsync();
     }
 
-
+    /**************************************************************************************************
+* *                             MÉTODOS PROPIOS DE ANDROID
+     * *********************************************************************************************/
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED)
@@ -194,12 +148,25 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onResume() {
+    protected void onResume()
+    {
         super.onResume();
 //        ubicaciones=Consultas.getUbicaciones(retrofitServices,getApplicationContext());
 
         //volvemos a reubicar la ubicación actual tras quitar de primer plano la app(fijarse en ciclo de vida)
         setupLocationDisplay();
-
+        mMapView.resume();
+    }
+    @Override
+    protected void onDestroy()
+    {
+        mMapView.dispose();
+        super.onDestroy();
+    }
+    @Override
+    protected void onPause()
+    {
+        super.onPause();
+        mMapView.pause();
     }
 }
