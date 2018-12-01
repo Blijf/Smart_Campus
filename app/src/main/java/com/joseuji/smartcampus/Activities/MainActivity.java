@@ -1,37 +1,31 @@
 package com.joseuji.smartcampus.Activities;
 
 import android.content.pm.PackageManager;
-import android.location.Location;
 import android.location.LocationManager;
-import android.location.LocationProvider;
+import android.os.Build;
 import android.support.annotation.NonNull;
+import android.support.annotation.RequiresApi;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.CompoundButton;
+import android.widget.ImageView;
 import android.widget.Toast;
+import android.widget.ToggleButton;
 
-import com.esri.arcgisruntime.data.FeatureTable;
-import com.esri.arcgisruntime.data.Geodatabase;
-import com.esri.arcgisruntime.data.ServiceFeatureTable;
-import com.esri.arcgisruntime.layers.FeatureLayer;
-import com.esri.arcgisruntime.layers.Layer;
-import com.esri.arcgisruntime.loadable.LoadStatus;
 import com.esri.arcgisruntime.location.AndroidLocationDataSource;
 import com.esri.arcgisruntime.mapping.ArcGISMap;
 import com.esri.arcgisruntime.mapping.Basemap;
 import com.esri.arcgisruntime.mapping.view.LocationDisplay;
 import com.esri.arcgisruntime.mapping.view.MapView;
-import com.joseuji.smartcampus.ClientWeb.Consultas;
 import com.joseuji.smartcampus.ClientWeb.Controller;
 import com.joseuji.smartcampus.ClientWeb.RetrofitServices;
 import com.joseuji.smartcampus.Models.Ubicaciones;
 import com.joseuji.smartcampus.R;
 import com.joseuji.smartcampus.Utils.SmartCampusLayers;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.InputStream;
 import java.util.List;
 
 import static android.Manifest.permission.ACCESS_COARSE_LOCATION;
@@ -46,6 +40,7 @@ public class MainActivity extends AppCompatActivity {
     private RetrofitServices retrofitServices;
     private MapView mMapView;
     private LocationDisplay mLocationDisplay;
+    ToggleButton tbBuildings;
     List<Ubicaciones>ubicaciones;
     Controller controller;
 
@@ -62,6 +57,7 @@ public class MainActivity extends AppCompatActivity {
         //----------------------------------------------------------------------------------
         setContentView(R.layout.activity_main);
         mMapView = findViewById(R.id.mapView);
+        tbBuildings= findViewById(R.id.tgBuildings);
         controller = new Controller();
         retrofitServices=controller.start();
         //----------------------------------------------------------------------------------
@@ -71,14 +67,34 @@ public class MainActivity extends AppCompatActivity {
         setupLocationDisplay();//ubicación
 
         //addLayers
-        SmartCampusLayers.baseLayer(mMapView);
+        SmartCampusLayers.baseBuildings(mMapView);
 
         //----------------------------------------------------------------------------------
         //                              CONSULTAS
         //----------------------------------------------------------------------------------
         //ubicaciones=Consultas.getUbicaciones(retrofitServices,getApplicationContext());
         //----------------------------------------------------------------------------------
-
+        /**************************************************************************************************
+         * *                                   BOTONES
+         * *********************************************************************************************/
+        tbBuildings.setText(null);
+        tbBuildings.setTextOn(null);
+        tbBuildings.setTextOff(null);
+        tbBuildings.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked)
+                {
+                    tbBuildings.setBackgroundDrawable(getDrawable(R.drawable.buildings_on));
+                    SmartCampusLayers.buildings(mMapView);
+                }
+                else
+                {
+                    tbBuildings.setBackgroundDrawable(getDrawable(R.drawable.buildings_off));
+                    SmartCampusLayers.deleteBuildings();
+                }
+            }
+        });
     }
     /**************************************************************************************************
      * *                                   MÉTODOS
@@ -88,10 +104,11 @@ public class MainActivity extends AppCompatActivity {
 
 //             If online basemap is desirable, uncomment the following lines
             Basemap.Type basemapType = Basemap.Type.STREETS_VECTOR;
+
             double latitude=39.994444;
             double longitude = -0.068889;
 
-            int levelOfDetail = 15;
+            int levelOfDetail = 16;
             ArcGISMap map = new ArcGISMap(basemapType, latitude, longitude, levelOfDetail);
 
             mMapView.setMap(map);
