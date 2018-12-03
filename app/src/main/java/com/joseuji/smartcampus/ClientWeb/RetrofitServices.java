@@ -17,8 +17,9 @@ public interface RetrofitServices {
     /*******************************************************************************************
      *GETS
      ********************************************************************************************/
-    @GET("ubicaciones/")
+    @GET("ubicaciones?start=0&limit=10000")
     Call<Ubicaciones> getUbicaciones();
+
 
 }
 

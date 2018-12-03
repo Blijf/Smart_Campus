@@ -9,6 +9,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.CompoundButton;
 import android.widget.Toast;
 import android.widget.ToggleButton;
@@ -177,6 +178,8 @@ public class MainActivity extends AppCompatActivity {
     {
         super.onResume();
         ubicaciones=Consultas.getUbicaciones(retrofitServices,getApplicationContext());
+
+
 
         //volvemos a reubicar la ubicación actual tras quitar de primer plano la app(fijarse en ciclo de vida)
         setupLocationDisplay();
