@@ -8,7 +8,8 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class Controller  {
 
-    public static  final String BASE_URL= "https://ujiapps.uji.es/lod-autorest/api/datasets/ubicaciones/";
+    public static final int REQUEST_CODE = 1234;
+    public static final String BASE_URL = "http://ujiapps.uji.es/lod-autorest/api/datasets/";
 
     public RetrofitServices start() {
         Gson gson = new GsonBuilder()

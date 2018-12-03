@@ -1,49 +1,36 @@
 package com.joseuji.smartcampus.Models;
 
-public class Ubicaciones {
+import java.util.List;
 
-    private String descripcion, _id, edificio, metros;
+public class Ubicaciones
+{
+    private Paginacion page;
+    private List<Ubicacion> content;
+    // Incluir otros campos
 
-    public Ubicaciones() {
+    public Ubicaciones()
+    {
+
     }
 
-    public Ubicaciones(String descripcion, String _id, String edificio, String metros) {
-        this.descripcion = descripcion;
-        this._id = _id;
-        this.edificio = edificio;
-        this.metros = metros;
+    public Ubicaciones(Paginacion page, List<Ubicacion> content) {
+        this.page = page;
+        this.content = content;
     }
 
-    //GETS Y SETS
-    public String get_id() {
-        return _id;
+    public Paginacion getPage() {
+        return page;
     }
 
-    public void set_id(String _id) {
-        this._id = _id;
+    public void setPage(Paginacion page) {
+        this.page = page;
     }
 
-    public String getDescripcion() {
-        return descripcion;
+    public List<Ubicacion> getContent() {
+        return content;
     }
 
-    public void setDescripcion(String descripcion) {
-        this.descripcion = descripcion;
-    }
-
-    public String getEdificio() {
-        return edificio;
-    }
-
-    public void setEdificio(String edificio) {
-        this.edificio = edificio;
-    }
-
-    public String getMetros() {
-        return metros;
-    }
-
-    public void setMetros(String metros) {
-        this.metros = metros;
+    public void setContent(List<Ubicacion> content) {
+        this.content = content;
     }
 }

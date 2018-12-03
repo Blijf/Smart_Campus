@@ -9,9 +9,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.CompoundButton;
-import android.widget.ImageView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
@@ -20,13 +18,19 @@ import com.esri.arcgisruntime.mapping.ArcGISMap;
 import com.esri.arcgisruntime.mapping.Basemap;
 import com.esri.arcgisruntime.mapping.view.LocationDisplay;
 import com.esri.arcgisruntime.mapping.view.MapView;
+import com.joseuji.smartcampus.ClientWeb.Consultas;
 import com.joseuji.smartcampus.ClientWeb.Controller;
 import com.joseuji.smartcampus.ClientWeb.RetrofitServices;
+import com.joseuji.smartcampus.Models.Ubicacion;
 import com.joseuji.smartcampus.Models.Ubicaciones;
 import com.joseuji.smartcampus.R;
 import com.joseuji.smartcampus.Utils.SmartCampusLayers;
 
 import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 import static android.Manifest.permission.ACCESS_COARSE_LOCATION;
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
@@ -41,7 +45,7 @@ public class MainActivity extends AppCompatActivity {
     private MapView mMapView;
     private LocationDisplay mLocationDisplay;
     ToggleButton tbBuildings;
-    List<Ubicaciones>ubicaciones;
+    Ubicaciones ubicaciones;
     Controller controller;
 
     /**************************************************************************************************
@@ -59,6 +63,7 @@ public class MainActivity extends AppCompatActivity {
         mMapView = findViewById(R.id.mapView);
         tbBuildings= findViewById(R.id.tgBuildings);
         controller = new Controller();
+        ubicaciones= new Ubicaciones();
         retrofitServices=controller.start();
         //----------------------------------------------------------------------------------
         //                          LLAMADA A LOS MÉTODOS
@@ -72,7 +77,10 @@ public class MainActivity extends AppCompatActivity {
         //----------------------------------------------------------------------------------
         //                              CONSULTAS
         //----------------------------------------------------------------------------------
-        //ubicaciones=Consultas.getUbicaciones(retrofitServices,getApplicationContext());
+        ubicaciones=Consultas.getUbicaciones(retrofitServices,getApplicationContext());
+
+
+
         //----------------------------------------------------------------------------------
         /**************************************************************************************************
          * *                                   BOTONES
@@ -168,7 +176,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume()
     {
         super.onResume();
-//        ubicaciones=Consultas.getUbicaciones(retrofitServices,getApplicationContext());
+        ubicaciones=Consultas.getUbicaciones(retrofitServices,getApplicationContext());
 
         //volvemos a reubicar la ubicación actual tras quitar de primer plano la app(fijarse en ciclo de vida)
         setupLocationDisplay();

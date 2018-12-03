@@ -1,24 +1,24 @@
 package com.joseuji.smartcampus.ClientWeb;
 
+import com.joseuji.smartcampus.Models.Ubicacion;
 import com.joseuji.smartcampus.Models.Ubicaciones;
-
-import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.http.GET;
-import retrofit2.http.Path;
-import retrofit2.http.Query;
-import retrofit2.http.Url;
+import retrofit2.http.Headers;
 
 public interface RetrofitServices {
+    @Headers
+    ({
+            "Content-Type: application/json;charset=utf-8",
+            "Accept: application/json"
+    })
 
     /*******************************************************************************************
      *GETS
      ********************************************************************************************/
-    @GET("")
-    Call<List<Ubicaciones>> getUbicaciones(@Query("descripcion") int des);
-
-
+    @GET("ubicaciones/")
+    Call<Ubicaciones> getUbicaciones();
 
 }
 
