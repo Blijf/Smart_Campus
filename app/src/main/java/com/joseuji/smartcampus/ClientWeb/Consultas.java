@@ -3,6 +3,7 @@ package com.joseuji.smartcampus.ClientWeb;
 import android.content.Context;
 import android.widget.Toast;
 
+import com.joseuji.smartcampus.Models.Asignaturas;
 import com.joseuji.smartcampus.Models.Ubicacion;
 import com.joseuji.smartcampus.Models.Ubicaciones;
 
@@ -13,6 +14,7 @@ import retrofit2.Response;
 public class Consultas {
 
     static Ubicaciones ubicaciones;
+    static Ubicaciones asignaturas;
     //------------------------------------------------------------------------------------------
     //                                  GETS TO UJI OPENDATA
     //------------------------------------------------------------------------------------------
@@ -48,4 +50,34 @@ public class Consultas {
         return  ubicaciones;
     }
 
+    public static Asignaturas getAsignaturas(RetrofitServices retrofitServices, final Context context)
+    {
+        asignaturas = new Asignaturas();
+
+        Call<Asignaturas> call = retrofitServices.getAsignaturas();
+
+        call.enqueue(new Callback<Asignaturas>()
+        {
+            @Override
+            public void  onResponse(Call<Asignaturas> call, Response<Asignaturas> response)
+            {
+                if(response.code()==200)
+                {
+                    asignaturas = response.body();
+                }
+                else
+                {
+                    Toast.makeText(context, "Servicio Web, se ha producido un error con código: "+response.code(),Toast.LENGTH_LONG).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Asignaturas> call, Throwable t)
+            {
+                Toast.makeText(context, "No se ha podido obtener la asignatura",Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        return  asignaturas;
+    }
 }
