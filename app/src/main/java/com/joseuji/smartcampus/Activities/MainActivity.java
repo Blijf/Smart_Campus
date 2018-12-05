@@ -10,7 +10,11 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 import android.widget.CompoundButton;
+import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
@@ -45,9 +49,12 @@ public class MainActivity extends AppCompatActivity {
     private RetrofitServices retrofitServices;
     private MapView mMapView;
     private LocationDisplay mLocationDisplay;
-    ToggleButton tbBuildings;
-    Ubicaciones ubicaciones;
-    Controller controller;
+    private Ubicacion ubicacion;
+    private TextView textView;
+    private ToggleButton tbBuildings;
+    private Controller controller;
+    private EditText etSearch;
+    private Button btSearch;
 
     /**************************************************************************************************
      * *                                   ONCREATE()
@@ -63,8 +70,10 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         mMapView = findViewById(R.id.mapView);
         tbBuildings= findViewById(R.id.tgBuildings);
+        etSearch= findViewById(R.id.etSearch);
+        btSearch= findViewById(R.id.btSearch);
+        textView= findViewById(R.id.tvTexto);
         controller = new Controller();
-        ubicaciones= new Ubicaciones();
         retrofitServices=controller.start();
         //----------------------------------------------------------------------------------
         //                          LLAMADA A LOS MÉTODOS
@@ -78,9 +87,7 @@ public class MainActivity extends AppCompatActivity {
         //----------------------------------------------------------------------------------
         //                              CONSULTAS
         //----------------------------------------------------------------------------------
-        ubicaciones=Consultas.getUbicaciones(retrofitServices,getApplicationContext());
-
-
+        Consultas.getUbicaciones(retrofitServices,getApplicationContext());
 
         //----------------------------------------------------------------------------------
         /**************************************************************************************************
@@ -103,6 +110,28 @@ public class MainActivity extends AppCompatActivity {
                     SmartCampusLayers.deleteBuildings();
                 }
             }
+        });
+
+        btSearch.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v)
+            {
+
+                    for (int i=0; i<=Consultas.ubicaciones.getContent().size(); i++)
+                    {
+                        ubicacion= Consultas.ubicaciones.getContent().get(i);
+
+                        if(ubicacion.getDescripcion().contains(etSearch.getText())||ubicacion.getEdificio().contains(etSearch.getText()))
+                        {
+                            textView.setText("existe");
+                        }
+                        else
+                        {
+                            textView.setText("No existe");
+                        }
+                    }
+            }
+
         });
     }
     /**************************************************************************************************
@@ -177,9 +206,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume()
     {
         super.onResume();
-        ubicaciones=Consultas.getUbicaciones(retrofitServices,getApplicationContext());
-
-
+        Consultas.getUbicaciones(retrofitServices,getApplicationContext());
 
         //volvemos a reubicar la ubicación actual tras quitar de primer plano la app(fijarse en ciclo de vida)
         setupLocationDisplay();
