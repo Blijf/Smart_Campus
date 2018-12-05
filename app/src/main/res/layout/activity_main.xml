@@ -10,7 +10,15 @@
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-
+        <TextView
+            android:id="@+id/tvTexto"
+            android:layout_width="150dp"
+            android:layout_height="50dp"
+            android:layout_gravity="center_vertical"
+            android:background="@color/colorTransparentWhite"
+            android:layout_margin="15dp"
+            android:text="Resultado "
+            android:gravity="center"/>
         <!--__________________________________________________________________________-->
         <!--MAPA-->
         <!--__________________________________________________________________________-->
@@ -18,7 +26,9 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@null"
+            android:orientation="vertical"
             >
+
 
             <com.esri.arcgisruntime.mapping.view.MapView
                 android:id="@+id/mapView"
@@ -41,13 +51,13 @@
 
 
             <EditText
-                android:id="@+id/editText"
+                android:id="@+id/etSearch"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="80"
                 android:paddingLeft="20dp"
                 android:ems="10"
-                android:hint=""
+                android:hint="¿Que quieres buscar?"
                 android:inputType="textPersonName"
                 android:text="" />
 
@@ -59,7 +69,9 @@
                 android:background="@android:drawable/ic_menu_search" />
 
         </LinearLayout>
-
+        <!--__________________________________________________________________________-->
+        <!--LISTA DE BOTONES, UTILS-->
+        <!--__________________________________________________________________________-->
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="match_parent"

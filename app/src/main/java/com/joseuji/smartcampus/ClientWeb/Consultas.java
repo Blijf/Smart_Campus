@@ -12,12 +12,12 @@ import retrofit2.Response;
 
 public class Consultas {
 
-    static Ubicaciones ubicaciones;
+    public static Ubicaciones ubicaciones;
     //------------------------------------------------------------------------------------------
     //                                  GETS TO UJI OPENDATA
     //------------------------------------------------------------------------------------------
 
-    public static Ubicaciones getUbicaciones(RetrofitServices retrofitServices, final Context context)
+    public static void getUbicaciones(RetrofitServices retrofitServices, final Context context)
     {
             ubicaciones = new Ubicaciones();
 
@@ -45,7 +45,6 @@ public class Consultas {
                 }
             });
 
-        return  ubicaciones;
     }
 
 }
