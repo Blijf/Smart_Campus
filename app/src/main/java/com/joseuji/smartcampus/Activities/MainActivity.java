@@ -26,6 +26,7 @@ import com.esri.arcgisruntime.mapping.view.MapView;
 import com.joseuji.smartcampus.ClientWeb.Consultas;
 import com.joseuji.smartcampus.ClientWeb.Controller;
 import com.joseuji.smartcampus.ClientWeb.RetrofitServices;
+import com.joseuji.smartcampus.Models.Asignaturas;
 import com.joseuji.smartcampus.Models.Ubicacion;
 import com.joseuji.smartcampus.Models.Ubicaciones;
 import com.joseuji.smartcampus.R;
@@ -88,6 +89,8 @@ public class MainActivity extends AppCompatActivity {
         //                              CONSULTAS
         //----------------------------------------------------------------------------------
         Consultas.getUbicaciones(retrofitServices,getApplicationContext());
+        Consultas.getAsignaturas(retrofitServices,getApplicationContext());
+
 
         //----------------------------------------------------------------------------------
         /**************************************************************************************************
