@@ -9,18 +9,22 @@ import retrofit2.http.GET;
 import retrofit2.http.Headers;
 
 public interface RetrofitServices {
+    /*******************************************************************************************
+     *GETS
+     ********************************************************************************************/
     @Headers
     ({
             "Content-Type: application/json;charset=utf-8",
             "Accept: application/json"
     })
-
-    /*******************************************************************************************
-     *GETS
-     ********************************************************************************************/
     @GET("ubicaciones?start=0&limit=10000")
     Call<Ubicaciones> getUbicaciones();
 
+    @Headers
+            ({
+                    "Content-Type: application/json;charset=utf-8",
+                    "Accept: application/json"
+            })
     @GET("asignaturas?start=0&limit=10000")
     Call<Asignaturas> getAsignaturas();
 

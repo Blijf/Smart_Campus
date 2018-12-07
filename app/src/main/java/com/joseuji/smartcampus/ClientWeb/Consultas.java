@@ -36,7 +36,7 @@ public class Consultas {
                     }
                     else
                     {
-                      Toast.makeText(context, "Servicio Web, se ha producido un error con código: "+response.code(),Toast.LENGTH_LONG).show();
+                      Toast.makeText(context, "Servicio Web (Ubicación), se ha producido un error con código: "+response.code(),Toast.LENGTH_LONG).show();
                     }
                 }
 
@@ -66,7 +66,7 @@ public class Consultas {
                 }
                 else
                 {
-                    Toast.makeText(context, "Servicio Web, se ha producido un error con código: "+response.code(),Toast.LENGTH_LONG).show();
+                    Toast.makeText(context, "Servicio Web (Asignatura), se ha producido un error con código: "+response.code(),Toast.LENGTH_LONG).show();
                 }
             }
 
