@@ -56,10 +56,11 @@ public class MainActivity extends AppCompatActivity {
     private Controller controller;
     private EditText etSearch;
     private Button btSearch;
+    ArcGISMap map;
 
     /**************************************************************************************************
      * *                                   ONCREATE()
-     * *********************************************************************************************/
+     * ********************************************************************************************/
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -84,12 +85,13 @@ public class MainActivity extends AppCompatActivity {
 
         //addLayers
         SmartCampusLayers.baseBuildings(mMapView);
-
+        SmartCampusLayers.addFloor(mMapView);
+//            SmartCampusLayers.addFloorInfo(map, mMapView);
         //----------------------------------------------------------------------------------
         //                              CONSULTAS
         //----------------------------------------------------------------------------------
-        Consultas.getUbicaciones(retrofitServices,getApplicationContext());
-        Consultas.getAsignaturas(retrofitServices,getApplicationContext());
+//        Consultas.getUbicaciones(retrofitServices,getApplicationContext());
+//        Consultas.getAsignaturas(retrofitServices,getApplicationContext());
 
 
         //----------------------------------------------------------------------------------
@@ -150,7 +152,7 @@ public class MainActivity extends AppCompatActivity {
             double longitude = -0.068889;
 
             int levelOfDetail = 16;
-            ArcGISMap map = new ArcGISMap(basemapType, latitude, longitude, levelOfDetail);
+            map = new ArcGISMap(basemapType, latitude, longitude, levelOfDetail);
 
             mMapView.setMap(map);
         }
