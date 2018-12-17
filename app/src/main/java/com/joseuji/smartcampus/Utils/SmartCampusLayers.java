@@ -34,6 +34,7 @@ public class SmartCampusLayers
 {
     private static ArcGISMap buildings;
     private static FeatureLayer featureLayerBuildings;
+    private static FeatureLayer featureLayerFloors;
     private static FeatureCollectionLayer featureCollectionLayerFloor;
     public static int floorNum=0;
     public static void baseBuildings(MapView mMapView)
@@ -60,9 +61,21 @@ public class SmartCampusLayers
     }
     public static void deleteFloors()
     {
-        buildings.getOperationalLayers().remove(featureCollectionLayerFloor);
+        buildings.getOperationalLayers().remove(featureLayerFloors);
     }
 
+
+
+    public static void quePlanta(MapView mMapView, int planta)
+    {
+
+        String url = "http://smartcampus.sg.uji.es:6080/arcgis/rest/services/SmartCampus/BuildingInteriorbyFloorMovil/MapServer/"+planta;
+        ServiceFeatureTable serviceFeatureTable = new ServiceFeatureTable(url);
+        featureLayerFloors = new FeatureLayer(serviceFeatureTable);
+        ArcGISMap map = mMapView.getMap();
+        map.getOperationalLayers().add(featureLayerFloors);
+    }
+    //---------------------------------------------------------------------------------------------
     public static  void  addFloorPlanes(final MapView mMapView)
     {
         //create query parameters
@@ -103,7 +116,7 @@ public class SmartCampusLayers
         // 1=1 will give all the features from the table
         queryParams.setWhereClause("FLOOR='"+floorNum+"'");
 
-        FeatureTable featureTable = new ServiceFeatureTable("http://smartcampus.sg.uji.es:6080/arcgis/rest/services/SmartCampus/UJIBuildingInteriorNew/MapServer/1");
+        FeatureTable featureTable = new ServiceFeatureTable("http://smartcampus.sg.uji.es:6080/arcgis/rest/services/SmartCampus/UJIBuildingInterior/MapServer/1");
 
 
         final ListenableFuture<FeatureQueryResult> queryResult = featureTable.queryFeaturesAsync(queryParams);

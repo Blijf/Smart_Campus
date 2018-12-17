@@ -89,6 +89,7 @@ public class MainActivity extends AppCompatActivity {
 
         //addLayers
         SmartCampusLayers.baseBuildings(mMapView);
+        SmartCampusLayers.quePlanta(mMapView,3);
 //        SmartCampusLayers.addFloorRooms(mMapView);
 //      SmartCampusLayers.addFloorInfo(map, mMapView);
         //----------------------------------------------------------------------------------
@@ -129,7 +130,8 @@ public class MainActivity extends AppCompatActivity {
                 if (isChecked)
                 {
                     tbFloors.setBackgroundDrawable(getDrawable(R.drawable.floors_on));
-                    SmartCampusLayers.addFloorPlanes(mMapView);
+//                    SmartCampusLayers.addFloorPlanes(mMapView);
+                    SmartCampusLayers.quePlanta(mMapView,3);
                     linearLayoutFloors.setVisibility(View.VISIBLE);
 
                 }
