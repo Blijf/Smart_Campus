@@ -34,6 +34,8 @@ public class SmartCampusLayers
 {
     private static ArcGISMap buildings;
     private static FeatureLayer featureLayerBuildings;
+    private static FeatureCollectionLayer featureCollectionLayerFloor;
+    public static int floorNum=0;
     public static void baseBuildings(MapView mMapView)
     {
         String url = "http://smartcampus.sg.uji.es:6080/arcgis/rest/services/SmartCampus/BaseBuildings/MapServer/0";
@@ -56,15 +58,19 @@ public class SmartCampusLayers
     {
         buildings.getOperationalLayers().remove(featureLayerBuildings);
     }
+    public static void deleteFloors()
+    {
+        buildings.getOperationalLayers().remove(featureCollectionLayerFloor);
+    }
 
-    public static  void  addFloor(final MapView mMapView)
+    public static  void  addFloorPlanes(final MapView mMapView)
     {
         //create query parameters
         QueryParameters queryParams = new QueryParameters();
         // 1=1 will give all the features from the table
-        queryParams.setWhereClause("FLOOR='1'");
+        queryParams.setWhereClause("FLOOR='"+floorNum+"'");
 
-        FeatureTable featureTable = new ServiceFeatureTable("http://smartcampus.sg.uji.es:6080/arcgis/rest/services/SmartCampus/UJIBuildingInterior/MapServer/1");
+        FeatureTable featureTable = new ServiceFeatureTable("http://smartcampus.sg.uji.es:6080/arcgis/rest/services/SmartCampus/UJIBuildingInteriorNew/MapServer/0");
 
 
         final ListenableFuture<FeatureQueryResult> queryResult = featureTable.queryFeaturesAsync(queryParams);
@@ -79,10 +85,10 @@ public class SmartCampusLayers
                     featureCollection.getTables().add(featureCollectionTable);
 
                     //create a feature collection layer
-                    FeatureCollectionLayer featureCollectionLayer = new FeatureCollectionLayer(featureCollection);
+                    featureCollectionLayerFloor= new FeatureCollectionLayer(featureCollection);
 
                     //add the layer to the operational layers array
-                    mMapView.getMap().getOperationalLayers().add(featureCollectionLayer);
+                    mMapView.getMap().getOperationalLayers().add(featureCollectionLayerFloor);
                 } catch (InterruptedException | ExecutionException e) {
                     Log.e(TAG, "Error in FeatureQueryResult: " + e.getMessage());
                 }
@@ -90,6 +96,39 @@ public class SmartCampusLayers
         });
     }
 
+    public static  void  addFloorRooms(final MapView mMapView)
+    {
+        //create query parameters
+        QueryParameters queryParams = new QueryParameters();
+        // 1=1 will give all the features from the table
+        queryParams.setWhereClause("FLOOR='"+floorNum+"'");
+
+        FeatureTable featureTable = new ServiceFeatureTable("http://smartcampus.sg.uji.es:6080/arcgis/rest/services/SmartCampus/UJIBuildingInteriorNew/MapServer/1");
+
+
+        final ListenableFuture<FeatureQueryResult> queryResult = featureTable.queryFeaturesAsync(queryParams);
+        queryResult.addDoneListener(new Runnable() {
+            @Override public void run() {
+                try {
+                    //create a feature collection table from the query results
+                    FeatureCollectionTable featureCollectionTable = new FeatureCollectionTable(queryResult.get());
+
+                    //create a feature collection from the above feature collection table
+                    FeatureCollection featureCollection = new FeatureCollection();
+                    featureCollection.getTables().add(featureCollectionTable);
+
+
+                    //create a feature collection layer
+                    FeatureCollectionLayer featureCollectionLayer = new FeatureCollectionLayer(featureCollection);
+
+                    //add the layer to the operational layers array
+                    mMapView.getMap().getOperationalLayers().add(featureCollectionLayer);
+                } catch (InterruptedException | ExecutionException e) {
+                    Log.e(TAG, "Error in FeatureQueryResult : " + e.getMessage());
+                }
+            }
+        });
+    }
     public static  void addFloorInfo(final ArcGISMap map, final MapView mMapView)
     {
         final FeatureLayer mFeaturelayer;

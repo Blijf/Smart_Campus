@@ -14,6 +14,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
@@ -52,10 +53,11 @@ public class MainActivity extends AppCompatActivity {
     private LocationDisplay mLocationDisplay;
     private Ubicacion ubicacion;
     private TextView textView;
-    private ToggleButton tbBuildings;
+    private ToggleButton tbBuildings, tbFloors;
     private Controller controller;
     private EditText etSearch;
     private Button btSearch;
+    private LinearLayout linearLayoutFloors;
     ArcGISMap map;
 
     /**************************************************************************************************
@@ -72,9 +74,11 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         mMapView = findViewById(R.id.mapView);
         tbBuildings= findViewById(R.id.tgBuildings);
+        tbFloors= findViewById(R.id.tgFloors);
         etSearch= findViewById(R.id.etSearch);
         btSearch= findViewById(R.id.btSearch);
         textView= findViewById(R.id.tvTexto);
+        linearLayoutFloors=findViewById(R.id.linearLayoutFloors);
         controller = new Controller();
         retrofitServices=controller.start();
         //----------------------------------------------------------------------------------
@@ -85,8 +89,8 @@ public class MainActivity extends AppCompatActivity {
 
         //addLayers
         SmartCampusLayers.baseBuildings(mMapView);
-        SmartCampusLayers.addFloor(mMapView);
-//            SmartCampusLayers.addFloorInfo(map, mMapView);
+//        SmartCampusLayers.addFloorRooms(mMapView);
+//      SmartCampusLayers.addFloorInfo(map, mMapView);
         //----------------------------------------------------------------------------------
         //                              CONSULTAS
         //----------------------------------------------------------------------------------
@@ -116,6 +120,27 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
+        tbFloors.setText(null);
+        tbFloors.setTextOn(null);
+        tbFloors.setTextOff(null);
+        tbFloors.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked)
+                {
+                    tbFloors.setBackgroundDrawable(getDrawable(R.drawable.floors_on));
+                    SmartCampusLayers.addFloorPlanes(mMapView);
+                    linearLayoutFloors.setVisibility(View.VISIBLE);
+
+                }
+                else
+                {
+                    tbFloors.setBackgroundDrawable(getDrawable(R.drawable.floors_off));
+                    SmartCampusLayers.deleteFloors();
+                    linearLayoutFloors.setVisibility(View.GONE);
+                }
+            }
+        });
 
         btSearch.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -138,6 +163,12 @@ public class MainActivity extends AppCompatActivity {
             }
 
         });
+
+        //----------------------------------------------------------------------------------------
+        //                                      PISOS
+        //----------------------------------------------------------------------------------------
+
+
     }
     /**************************************************************************************************
      * *                                   MÉTODOS
@@ -146,7 +177,7 @@ public class MainActivity extends AppCompatActivity {
         if (mMapView != null) {
 
 //             If online basemap is desirable, uncomment the following lines
-            Basemap.Type basemapType = Basemap.Type.STREETS_VECTOR;
+            Basemap.Type basemapType = Basemap.Type.DARK_GRAY_CANVAS_VECTOR;
 
             double latitude=39.994444;
             double longitude = -0.068889;
