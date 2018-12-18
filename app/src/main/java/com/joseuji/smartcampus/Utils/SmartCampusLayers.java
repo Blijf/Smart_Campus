@@ -65,16 +65,20 @@ public class SmartCampusLayers
     }
 
 
-
-    public static void quePlanta(MapView mMapView, int planta)
+    //http://smartcampus.sg.uji.es:6080/arcgis/rest/services/SmartCampus/BuildingInteriorbyFloorMovil/MapServer- de esta forma se sabe el layerFloor
+    public static void quePlanta(MapView mMapView, int layerFloor)
     {
 
-        String url = "http://smartcampus.sg.uji.es:6080/arcgis/rest/services/SmartCampus/BuildingInteriorbyFloorMovil/MapServer/"+planta;
+        String url = "http://smartcampus.sg.uji.es:6080/arcgis/rest/services/SmartCampus/BuildingInteriorbyFloorMovil/MapServer/"+layerFloor;
         ServiceFeatureTable serviceFeatureTable = new ServiceFeatureTable(url);
         featureLayerFloors = new FeatureLayer(serviceFeatureTable);
         ArcGISMap map = mMapView.getMap();
         map.getOperationalLayers().add(featureLayerFloors);
     }
+
+
+    //---------------------------------------------------------------------------------------------
+    //                                      PRUEBAS
     //---------------------------------------------------------------------------------------------
     public static  void  addFloorPlanes(final MapView mMapView)
     {
@@ -108,7 +112,6 @@ public class SmartCampusLayers
             }
         });
     }
-
     public static  void  addFloorRooms(final MapView mMapView)
     {
         //create query parameters

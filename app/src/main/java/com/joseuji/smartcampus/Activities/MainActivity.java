@@ -56,7 +56,7 @@ public class MainActivity extends AppCompatActivity {
     private ToggleButton tbBuildings, tbFloors;
     private Controller controller;
     private EditText etSearch;
-    private Button btSearch;
+    private Button btSearch,btFloorS, btFloor0, btFloor1,btFloor2,btFloor3,btFloor4,btFloor5,btFloor6;
     private LinearLayout linearLayoutFloors;
     ArcGISMap map;
 
@@ -77,6 +77,8 @@ public class MainActivity extends AppCompatActivity {
         tbFloors= findViewById(R.id.tgFloors);
         etSearch= findViewById(R.id.etSearch);
         btSearch= findViewById(R.id.btSearch);
+        btFloorS=findViewById(R.id.tgFloorS);btFloor0=findViewById(R.id.tgFloor0);btFloor1=findViewById(R.id.tgFloor1);btFloor2=findViewById(R.id.tgFloor2);
+        btFloor3=findViewById(R.id.tgFloor3);btFloor4=findViewById(R.id.tgFloor4);btFloor5=findViewById(R.id.tgFloor5);btFloor6=findViewById(R.id.tgFloor6);
         textView= findViewById(R.id.tvTexto);
         linearLayoutFloors=findViewById(R.id.linearLayoutFloors);
         controller = new Controller();
@@ -89,8 +91,7 @@ public class MainActivity extends AppCompatActivity {
 
         //addLayers
         SmartCampusLayers.baseBuildings(mMapView);
-        SmartCampusLayers.quePlanta(mMapView,3);
-//        SmartCampusLayers.addFloorRooms(mMapView);
+//      SmartCampusLayers.addFloorRooms(mMapView);
 //      SmartCampusLayers.addFloorInfo(map, mMapView);
         //----------------------------------------------------------------------------------
         //                              CONSULTAS
@@ -169,7 +170,70 @@ public class MainActivity extends AppCompatActivity {
         //----------------------------------------------------------------------------------------
         //                                      PISOS
         //----------------------------------------------------------------------------------------
-
+        btFloorS.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v)
+            {
+                SmartCampusLayers.quePlanta(mMapView,1);//plano
+                SmartCampusLayers.quePlanta(mMapView,2);//Interior Spaces
+            }
+        });
+        btFloor0.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v)
+            {
+                SmartCampusLayers.quePlanta(mMapView,4);//plano
+                SmartCampusLayers.quePlanta(mMapView,5);//Interior Spaces
+            }
+        });
+        btFloor1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v)
+            {
+                SmartCampusLayers.quePlanta(mMapView,7);//plano
+                SmartCampusLayers.quePlanta(mMapView,8);//Interior Spaces
+            }
+        });
+        btFloor2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v)
+            {
+                SmartCampusLayers.quePlanta(mMapView,10);//plano
+                SmartCampusLayers.quePlanta(mMapView,11);//Interior Spaces
+            }
+        });
+        btFloor3.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v)
+            {
+                SmartCampusLayers.quePlanta(mMapView,13);//plano
+                SmartCampusLayers.quePlanta(mMapView,14);//Interior Spaces
+            }
+        });
+        btFloor4.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v)
+            {
+                SmartCampusLayers.quePlanta(mMapView,16);//plano
+                SmartCampusLayers.quePlanta(mMapView,17);//Interior Spaces
+            }
+        });
+        btFloor5.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v)
+            {
+                SmartCampusLayers.quePlanta(mMapView,19);//plano
+                SmartCampusLayers.quePlanta(mMapView,20);//Interior Spaces
+            }
+        });
+        btFloor6.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v)
+            {
+                SmartCampusLayers.quePlanta(mMapView,22);//plano
+                SmartCampusLayers.quePlanta(mMapView,23);//Interior Spaces
+            }
+        });
 
     }
     /**************************************************************************************************
@@ -184,9 +248,8 @@ public class MainActivity extends AppCompatActivity {
             double latitude=39.994444;
             double longitude = -0.068889;
 
-            int levelOfDetail = 16;
+            int levelOfDetail = 17;
             map = new ArcGISMap(basemapType, latitude, longitude, levelOfDetail);
-
             mMapView.setMap(map);
         }
     }

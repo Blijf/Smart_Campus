@@ -8,4 +8,12 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+    <style name="FloorButton">
+        <item name="android:layout_height">40dp</item>
+        <item name="android:layout_width">40dp</item>
+        <item name="android:background">@color/colorAccent</item>
+        <item name="android:layout_marginBottom">10dp</item>
+        <item name="android:textOn"></item>
+        <item name="android:textOff"></item>
+    </style>
 </resources>
