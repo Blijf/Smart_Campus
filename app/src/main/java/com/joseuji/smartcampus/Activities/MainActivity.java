@@ -1,6 +1,7 @@
 package com.joseuji.smartcampus.Activities;
 
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.location.LocationManager;
 import android.os.Build;
 import android.support.annotation.NonNull;
@@ -10,6 +11,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CompoundButton;
@@ -19,11 +21,28 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
+import com.esri.arcgisruntime.concurrent.ListenableFuture;
+import com.esri.arcgisruntime.geometry.Point;
+import com.esri.arcgisruntime.geometry.Polyline;
+import com.esri.arcgisruntime.loadable.LoadStatus;
 import com.esri.arcgisruntime.location.AndroidLocationDataSource;
 import com.esri.arcgisruntime.mapping.ArcGISMap;
 import com.esri.arcgisruntime.mapping.Basemap;
+import com.esri.arcgisruntime.mapping.view.DefaultMapViewOnTouchListener;
+import com.esri.arcgisruntime.mapping.view.Graphic;
+import com.esri.arcgisruntime.mapping.view.GraphicsOverlay;
 import com.esri.arcgisruntime.mapping.view.LocationDisplay;
 import com.esri.arcgisruntime.mapping.view.MapView;
+import com.esri.arcgisruntime.security.AuthenticationManager;
+import com.esri.arcgisruntime.security.DefaultAuthenticationChallengeHandler;
+import com.esri.arcgisruntime.security.OAuthConfiguration;
+import com.esri.arcgisruntime.symbology.SimpleLineSymbol;
+import com.esri.arcgisruntime.symbology.SimpleMarkerSymbol;
+import com.esri.arcgisruntime.tasks.networkanalysis.Route;
+import com.esri.arcgisruntime.tasks.networkanalysis.RouteParameters;
+import com.esri.arcgisruntime.tasks.networkanalysis.RouteResult;
+import com.esri.arcgisruntime.tasks.networkanalysis.RouteTask;
+import com.esri.arcgisruntime.tasks.networkanalysis.Stop;
 import com.joseuji.smartcampus.ClientWeb.Consultas;
 import com.joseuji.smartcampus.ClientWeb.Controller;
 import com.joseuji.smartcampus.ClientWeb.RetrofitServices;
@@ -33,7 +52,10 @@ import com.joseuji.smartcampus.Models.Ubicaciones;
 import com.joseuji.smartcampus.R;
 import com.joseuji.smartcampus.Utils.SmartCampusLayers;
 
+import java.net.MalformedURLException;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -59,6 +81,11 @@ public class MainActivity extends AppCompatActivity {
     private Button btSearch,btFloorS, btFloor0, btFloor1,btFloor2,btFloor3,btFloor4,btFloor5,btFloor6;
     private LinearLayout linearLayoutFloors;
     ArcGISMap map;
+
+    //Variables para rutas
+    private GraphicsOverlay mGraphicsOverlay;
+    private Point mStart;
+    private Point mEnd;
 
     /**************************************************************************************************
      * *                                   ONCREATE()
@@ -93,6 +120,10 @@ public class MainActivity extends AppCompatActivity {
         SmartCampusLayers.baseBuildings(mMapView);
 //      SmartCampusLayers.addFloorRooms(mMapView);
 //      SmartCampusLayers.addFloorInfo(map, mMapView);
+
+        //Se muestran los planos y la info de la planta cero al iniciar la Aplicación
+        SmartCampusLayers.quePlanta(mMapView,4);//plano
+        SmartCampusLayers.quePlanta(mMapView,5);//Interior Spaces
         //----------------------------------------------------------------------------------
         //                              CONSULTAS
         //----------------------------------------------------------------------------------
@@ -235,6 +266,11 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+
+        // Rutas
+        createGraphicsOverlay();
+        setupOAuthManager();
+
     }
     /**************************************************************************************************
      * *                                   MÉTODOS
@@ -243,7 +279,8 @@ public class MainActivity extends AppCompatActivity {
         if (mMapView != null) {
 
 //             If online basemap is desirable, uncomment the following lines
-            Basemap.Type basemapType = Basemap.Type.DARK_GRAY_CANVAS_VECTOR;
+            //Basemap.Type basemapType = Basemap.Type.DARK_GRAY_CANVAS_VECTOR;
+            Basemap.Type basemapType = Basemap.Type.STREETS_VECTOR;
 
             double latitude=39.994444;
             double longitude = -0.068889;
@@ -251,6 +288,19 @@ public class MainActivity extends AppCompatActivity {
             int levelOfDetail = 17;
             map = new ArcGISMap(basemapType, latitude, longitude, levelOfDetail);
             mMapView.setMap(map);
+
+            // Rutas en pantalla
+            mMapView.setOnTouchListener(new DefaultMapViewOnTouchListener(this, mMapView) {
+                @Override public boolean onSingleTapConfirmed(MotionEvent e) {
+                    android.graphics.Point screenPoint = new android.graphics.Point(
+                            Math.round(e.getX()),
+                            Math.round(e.getY()));
+                    Point mapPoint = mMapView.screenToLocation(screenPoint);
+                    mapClicked(mapPoint);
+                    return super.onSingleTapConfirmed(e);
+                }
+            });
+
         }
     }
 
@@ -325,4 +375,123 @@ public class MainActivity extends AppCompatActivity {
         super.onPause();
         mMapView.pause();
     }
+
+
+    /**************************************************************************************************
+                                  MÉTODOS PARA RUTAS
+     * *********************************************************************************************/
+
+    private void createGraphicsOverlay() {
+        mGraphicsOverlay = new GraphicsOverlay();
+        mMapView.getGraphicsOverlays().add(mGraphicsOverlay);
+    }
+
+    private void setMapMarker(Point location, SimpleMarkerSymbol.Style style, int markerColor, int outlineColor) {
+        float markerSize = 8.0f;
+        float markerOutlineThickness = 2.0f;
+        SimpleMarkerSymbol pointSymbol = new SimpleMarkerSymbol(style, markerColor, markerSize);
+        pointSymbol.setOutline(new SimpleLineSymbol(SimpleLineSymbol.Style.SOLID, outlineColor, markerOutlineThickness));
+        Graphic pointGraphic = new Graphic(location, pointSymbol);
+        mGraphicsOverlay.getGraphics().add(pointGraphic);
+    }
+
+    private void setStartMarker(Point location) {
+        mGraphicsOverlay.getGraphics().clear();
+        setMapMarker(location, SimpleMarkerSymbol.Style.DIAMOND, Color.rgb(226, 119, 40), Color.BLUE);
+        mStart = location;
+        mEnd = null;
+    }
+
+    private void setEndMarker(Point location) {
+        setMapMarker(location, SimpleMarkerSymbol.Style.SQUARE, Color.rgb(40, 119, 226), Color.RED);
+        mEnd = location;
+        findRoute();
+    }
+
+    private void mapClicked(Point location) {
+        if (mStart == null) {
+            // Start is not set, set it to a tapped location
+            setStartMarker(location);
+        } else if (mEnd == null) {
+            // End is not set, set it to the tapped location then find the route
+            setEndMarker(location);
+        } else {
+            // Both locations are set; re-set the start to the tapped location
+            setStartMarker(location);
+        }
+    }
+
+    private void setupOAuthManager() {
+        String clientId = getResources().getString(R.string.client_id);
+        String redirectUrl = getResources().getString(R.string.redirect_url);
+
+        try {
+            OAuthConfiguration oAuthConfiguration = new OAuthConfiguration("https://www.arcgis.com", clientId, redirectUrl);
+            DefaultAuthenticationChallengeHandler authenticationChallengeHandler = new DefaultAuthenticationChallengeHandler(this);
+            AuthenticationManager.setAuthenticationChallengeHandler(authenticationChallengeHandler);
+            AuthenticationManager.addOAuthConfiguration(oAuthConfiguration);
+        } catch (MalformedURLException e) {
+            showError(e.getMessage());
+        }
+    }
+    private void showError(String message) {
+        Log.d("FindRoute", message);
+        Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show();
+    }
+
+    private void findRoute() {
+        // Code from the next step goes here
+
+        String routeServiceURI = getResources().getString(R.string.routing_url);
+        //final RouteTask solveRouteTask = new RouteTask(getApplicationContext(), routeServiceURI);
+        //final RouteTask solveRouteTask = new RouteTask(getApplicationContext(), "http://smartcampus.sg.uji.es:6080/arcgis/rest/services/Network/GermanNet/NAServer/Route");
+        final RouteTask solveRouteTask = new RouteTask(getApplicationContext(), "http://smartcampus.sg.uji.es:6080/arcgis/rest/services/Network/GermanNet/NAServer/Route");
+
+
+        solveRouteTask.loadAsync();
+        solveRouteTask.addDoneLoadingListener(() -> {
+            // Code from the next step goes here
+            if (solveRouteTask.getLoadStatus() == LoadStatus.LOADED) {
+                final ListenableFuture<RouteParameters> routeParamsFuture = solveRouteTask.createDefaultParametersAsync();
+                routeParamsFuture.addDoneListener(() -> {
+                    try {
+                        RouteParameters routeParameters = routeParamsFuture.get();
+                        List<Stop> stops = new ArrayList<>();
+                        stops.add(new Stop(mStart));
+                        stops.add(new Stop(mEnd));
+                        routeParameters.setStops(stops);
+                        // Code from the next step goes here
+                        final ListenableFuture<RouteResult> routeResultFuture = solveRouteTask.solveRouteAsync(routeParameters);
+                        //routeResultFuture.addDoneListener(() -> {
+                        routeResultFuture.addDoneListener(new Runnable() {
+                                @Override
+                                public void run() {
+                                    try {
+                                        RouteResult routeResult = routeResultFuture.get();
+                                        Route firstRoute = routeResult.getRoutes().get(0);
+                                        // Code from the next step goes here
+
+                                        Polyline routePolyline = firstRoute.getRouteGeometry();
+                                        SimpleLineSymbol routeSymbol = new SimpleLineSymbol(SimpleLineSymbol.Style.SOLID, Color.BLUE, 4.0f);
+                                        Graphic routeGraphic = new Graphic(routePolyline, routeSymbol);
+                                        mGraphicsOverlay.getGraphics().add(routeGraphic);
+
+                                    } catch (InterruptedException | ExecutionException e) {
+                                        showError("Solve RouteTask failed " + e.getMessage());
+                                    }
+                                }
+                        });
+
+
+                    } catch (InterruptedException | ExecutionException e) {
+                        showError("Cannot create RouteTask parameters " + e.getMessage());
+                    }
+                });
+            } else {
+                showError("Unable to load RouteTask " + solveRouteTask.getLoadStatus().toString());
+            }
+
+        });
+    }
+
 }
