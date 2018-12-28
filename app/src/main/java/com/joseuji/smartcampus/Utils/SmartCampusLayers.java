@@ -32,7 +32,7 @@ import static android.content.ContentValues.TAG;
 
 public class SmartCampusLayers
 {
-    private static ArcGISMap buildings;
+    private static ArcGISMap buildings, floors;
     private static FeatureLayer featureLayerBuildings;
     private static FeatureLayer featureLayerFloors;
     private static FeatureCollectionLayer featureCollectionLayerFloor;
@@ -61,7 +61,7 @@ public class SmartCampusLayers
     }
     public static void deleteFloors()
     {
-        buildings.getOperationalLayers().remove(featureLayerFloors);
+        floors.getOperationalLayers().remove(featureLayerFloors);
     }
 
 
@@ -72,8 +72,8 @@ public class SmartCampusLayers
         String url = "http://smartcampus.sg.uji.es:6080/arcgis/rest/services/SmartCampus/BuildingInteriorbyFloorMovil/MapServer/"+layerFloor;
         ServiceFeatureTable serviceFeatureTable = new ServiceFeatureTable(url);
         featureLayerFloors = new FeatureLayer(serviceFeatureTable);
-        ArcGISMap map = mMapView.getMap();
-        map.getOperationalLayers().add(featureLayerFloors);
+        floors = mMapView.getMap();
+        floors.getOperationalLayers().add(featureLayerFloors);
     }
 
 

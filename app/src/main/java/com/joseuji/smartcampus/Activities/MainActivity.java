@@ -205,6 +205,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v)
             {
+                SmartCampusLayers.deleteFloors();//borramos las capas de los otros pisos
                 SmartCampusLayers.quePlanta(mMapView,1);//plano
                 SmartCampusLayers.quePlanta(mMapView,2);//Interior Spaces
             }
@@ -213,6 +214,9 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v)
             {
+                SmartCampusLayers.deleteFloors();//borramos las capas de los otros pisos
+
+
                 SmartCampusLayers.quePlanta(mMapView,4);//plano
                 SmartCampusLayers.quePlanta(mMapView,5);//Interior Spaces
             }
@@ -221,6 +225,8 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v)
             {
+                SmartCampusLayers.deleteFloors();//borramos las capas de los otros pisos
+
                 SmartCampusLayers.quePlanta(mMapView,7);//plano
                 SmartCampusLayers.quePlanta(mMapView,8);//Interior Spaces
             }
@@ -229,6 +235,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v)
             {
+                SmartCampusLayers.deleteFloors();//borramos las capas de los otros pisos
                 SmartCampusLayers.quePlanta(mMapView,10);//plano
                 SmartCampusLayers.quePlanta(mMapView,11);//Interior Spaces
             }
@@ -237,6 +244,8 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v)
             {
+                SmartCampusLayers.deleteFloors();//borramos las capas de los otros pisos
+
                 SmartCampusLayers.quePlanta(mMapView,13);//plano
                 SmartCampusLayers.quePlanta(mMapView,14);//Interior Spaces
             }
@@ -245,6 +254,8 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v)
             {
+                SmartCampusLayers.deleteFloors();//borramos las capas de los otros pisos
+
                 SmartCampusLayers.quePlanta(mMapView,16);//plano
                 SmartCampusLayers.quePlanta(mMapView,17);//Interior Spaces
             }
@@ -253,6 +264,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v)
             {
+                SmartCampusLayers.deleteFloors();//borramos las capas de los otros pisos
                 SmartCampusLayers.quePlanta(mMapView,19);//plano
                 SmartCampusLayers.quePlanta(mMapView,20);//Interior Spaces
             }
@@ -261,6 +273,8 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v)
             {
+
+                SmartCampusLayers.deleteFloors();//borramos las capas de los otros pisos
                 SmartCampusLayers.quePlanta(mMapView,22);//plano
                 SmartCampusLayers.quePlanta(mMapView,23);//Interior Spaces
             }
