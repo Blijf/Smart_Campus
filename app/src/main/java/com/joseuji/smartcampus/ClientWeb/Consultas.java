@@ -15,6 +15,10 @@ public class Consultas {
 
     public static Ubicaciones ubicaciones;
     public static Asignaturas asignaturas;
+
+    public static double longitud;
+    public static double latitud;
+    public static double altitud;
     //------------------------------------------------------------------------------------------
     //                                  GETS TO UJI OPENDATA
     //------------------------------------------------------------------------------------------
@@ -33,6 +37,9 @@ public class Consultas {
                     if(response.code()==200)
                     {
                         ubicaciones = response.body();
+                        longitud= Consultas.ubicaciones.getDatos().get(0).getLocalizacion().getLatitud();
+                        latitud= Consultas.ubicaciones.getDatos().get(0).getLocalizacion().getLongitud();
+                        altitud=Consultas.ubicaciones.getDatos().get(0).getLocalizacion().getAltitud();
                     }
                     else
                     {

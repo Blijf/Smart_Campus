@@ -181,6 +181,8 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v)
             {
                 Consultas.getUbicaciones(retrofitServices, getApplicationContext(), String.valueOf(etSearch.getText()));
+
+
             }
 
         });
@@ -404,17 +406,21 @@ public class MainActivity extends AppCompatActivity {
 
     private void setEndMarker(Point location) {
         setMapMarker(location, SimpleMarkerSymbol.Style.SQUARE, Color.rgb(40, 119, 226), Color.RED);
-        mEnd = location;
-        findRoute();
+        //mEnd = location;
+        //findRoute();
     }
 
     private void mapClicked(Point location) {
         if (mStart == null) {
             // Start is not set, set it to a tapped location
             setStartMarker(location);
+            findRoute();
         } else if (mEnd == null) {
             // End is not set, set it to the tapped location then find the route
+            location=new Point(Consultas.latitud, Consultas.longitud,Consultas.altitud);
             setEndMarker(location);
+            findRoute();
+            //mEnd=new Point(Consultas.latitud, Consultas.longitud,Consultas.altitud);
         } else {
             // Both locations are set; re-set the start to the tapped location
             setStartMarker(location);
