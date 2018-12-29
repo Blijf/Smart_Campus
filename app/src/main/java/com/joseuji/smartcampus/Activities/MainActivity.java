@@ -10,6 +10,8 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
@@ -113,7 +115,7 @@ public class MainActivity extends AppCompatActivity {
         //----------------------------------------------------------------------------------
         //                          LLAMADA A LOS MÉTODOS
         //----------------------------------------------------------------------------------
-        setupMap();//configuración del mapa
+        setupMap(39.994444,-0.068889);//configuración del mapa
         setupLocationDisplay();//ubicación
 
         //addLayers
@@ -175,22 +177,46 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
+        //----------------------------------------------------------------------------------------
+        //                                     BÚSCADOR
+        //----------------------------------------------------------------------------------------
+        //edit text, de esta forma se espera a que la consulta en cola se realice
+        etSearch.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count)
+            {
+                Point busqueda= Consultas.getPuntoBusqueda(retrofitServices, getApplicationContext(), String.valueOf(etSearch.getText()));
+                if(busqueda==null)
+                {
+                    return;
+                }
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
         btSearch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v)
             {
-                Consultas.getUbicaciones(retrofitServices, getApplicationContext(), String.valueOf(etSearch.getText()));
-                Point busqueda=new Point(Consultas.latitud, Consultas.longitud,Consultas.altitud); //Punto buscado por el usuario
+                //Marca el punto inicial de la ruta, según la ubicación.
+//                setStartMarker(mLocationDisplay.getMapLocation());
 
-                //Se marca en el mapa y se
-                setMapMarker(busqueda, SimpleMarkerSymbol.Style.DIAMOND, Color.rgb(226, 119, 40), Color.BLUE);
-                mEnd=busqueda;
+                Point busqueda= Consultas.getPuntoBusqueda(retrofitServices, getApplicationContext(), String.valueOf(etSearch.getText()));
 
-                Basemap.Type basemapType = Basemap.Type.STREETS_VECTOR;
-                int levelOfDetail = 17;
-                map = new ArcGISMap(basemapType, mEnd.getY(), mEnd.getX(), levelOfDetail);
-                mMapView.setMap(map);
+                //Marca final de la ruta
+                setEndMarker(busqueda);
+
+                findRoute();//se define la ruta con un trazo
+
             }
 
         });
@@ -286,16 +312,12 @@ public class MainActivity extends AppCompatActivity {
     /**************************************************************************************************
      * *                                   MÉTODOS
      * *********************************************************************************************/
-    private void setupMap() {
+    private void setupMap(double latitude, double longitude) {
         if (mMapView != null) {
 
 //             If online basemap is desirable, uncomment the following lines
             //Basemap.Type basemapType = Basemap.Type.DARK_GRAY_CANVAS_VECTOR;
             Basemap.Type basemapType = Basemap.Type.STREETS_VECTOR;
-
-            double latitude=39.994444;
-            double longitude = -0.068889;
-
             int levelOfDetail = 17;
             map = new ArcGISMap(basemapType, latitude, longitude, levelOfDetail);
             mMapView.setMap(map);
@@ -350,7 +372,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**************************************************************************************************
-* *                             MÉTODOS PROPIOS DE ANDROID
+     * *                             MÉTODOS PROPIOS DE ANDROID
      * *********************************************************************************************/
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
@@ -396,7 +418,7 @@ public class MainActivity extends AppCompatActivity {
         mMapView.getGraphicsOverlays().add(mGraphicsOverlay);
     }
 
-    private void setMapMarker(Point location, SimpleMarkerSymbol.Style style, int markerColor, int outlineColor) {
+    public void setMapMarker(Point location, SimpleMarkerSymbol.Style style, int markerColor, int outlineColor) {
         float markerSize = 8.0f;
         float markerOutlineThickness = 2.0f;
         SimpleMarkerSymbol pointSymbol = new SimpleMarkerSymbol(style, markerColor, markerSize);
@@ -409,31 +431,34 @@ public class MainActivity extends AppCompatActivity {
         mGraphicsOverlay.getGraphics().clear();
         setMapMarker(location, SimpleMarkerSymbol.Style.DIAMOND, Color.rgb(226, 119, 40), Color.BLUE);
         mStart = location;
-        //mEnd = null;
+        mEnd = null;
     }
 
-    private void setEndMarker(Point location) {
+    public  void setEndMarker(Point location) {
         setMapMarker(location, SimpleMarkerSymbol.Style.SQUARE, Color.rgb(40, 119, 226), Color.RED);
         mEnd = location;
-        //findRoute();
+        findRoute();
     }
 
     private void mapClicked(Point location) {
         if (mStart == null) {
             // Start is not set, set it to a tapped location
             setStartMarker(location);
-            findRoute();
-        } else if (mEnd == null) {
+//            findRoute();
+        }
+       /* else if (mEnd == null)
+        {
             // End is not set, set it to the tapped location then find the route
-            //location=new Point(Consultas.latitud, Consultas.longitud,Consultas.altitud);
             setEndMarker(location);
             //findRoute();
             //mEnd=new Point(Consultas.latitud, Consultas.longitud,Consultas.altitud);
-        /*} else {
+        }
+        else
+        {
             // Both locations are set; re-set the start to the tapped location
             setStartMarker(location);
-            findRoute();*/
-        }
+            findRoute();
+        }*/
     }
 
     private void setupOAuthManager() {
@@ -465,6 +490,7 @@ public class MainActivity extends AppCompatActivity {
 
         solveRouteTask.loadAsync();
         solveRouteTask.addDoneLoadingListener(() -> {
+
             // Code from the next step goes here
             if (solveRouteTask.getLoadStatus() == LoadStatus.LOADED) {
                 final ListenableFuture<RouteParameters> routeParamsFuture = solveRouteTask.createDefaultParametersAsync();

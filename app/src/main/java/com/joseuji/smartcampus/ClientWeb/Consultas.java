@@ -3,8 +3,8 @@ package com.joseuji.smartcampus.ClientWeb;
 import android.content.Context;
 import android.widget.Toast;
 
+import com.esri.arcgisruntime.geometry.Point;
 import com.joseuji.smartcampus.Models.Asignaturas;
-import com.joseuji.smartcampus.Models.Ubicacion;
 import com.joseuji.smartcampus.Models.Ubicaciones;
 
 import retrofit2.Call;
@@ -16,14 +16,13 @@ public class Consultas {
     public static Ubicaciones ubicaciones;
     public static Asignaturas asignaturas;
 
-    public static double longitud;
-    public static double latitud;
-    public static double altitud;
+    public static Point pointBusqueda;
+    public static boolean finishPuntoEnd;
     //------------------------------------------------------------------------------------------
     //                                  GETS TO UJI OPENDATA
     //------------------------------------------------------------------------------------------
 
-    public static void getUbicaciones(RetrofitServices retrofitServices, final Context context, String textobusqueda)
+    public static Point getPuntoBusqueda(RetrofitServices retrofitServices, final Context context, String textobusqueda)
     {
             ubicaciones = new Ubicaciones();
 
@@ -37,10 +36,12 @@ public class Consultas {
                     if(response.code()==200)
                     {
                         ubicaciones = response.body();
-                        longitud= Consultas.ubicaciones.getDatos().get(0).getLocalizacion().getLatitud();
-                        latitud= Consultas.ubicaciones.getDatos().get(0).getLocalizacion().getLongitud();
-                        //altitud=Consultas.ubicaciones.getDatos().get(0).getLocalizacion().getAltitud();
-                        altitud=0.0;
+                        double longitud= Consultas.ubicaciones.getDatos().get(0).getLocalizacion().getLatitud();
+                        double latitud= Consultas.ubicaciones.getDatos().get(0).getLocalizacion().getLongitud();
+                        double altitud=Consultas.ubicaciones.getDatos().get(0).getLocalizacion().getAltitud();
+                        pointBusqueda=new Point(latitud,longitud,altitud); //Punto buscado por el usuario
+
+                        finishPuntoEnd=true;
                     }
                     else
                     {
@@ -55,6 +56,7 @@ public class Consultas {
                 }
             });
 
+            return pointBusqueda;
     }
 
     public static Asignaturas getAsignaturas(RetrofitServices retrofitServices, final Context context)
