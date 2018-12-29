@@ -2,48 +2,44 @@ package com.joseuji.smartcampus.Models;
 
 public class Ubicacion {
 
-    private String descripcion, _id, edificio, metros;
+    private String id, edificioId, metros,descripcion;
+    private Localizacion localizacion;
 
     public Ubicacion() {
     }
 
-    public Ubicacion(String descripcion, String _id, String edificio, String metros) {
-        this.descripcion = descripcion;
-        this._id = _id;
-        this.edificio = edificio;
+
+
+    public Ubicacion(String id, String edificioId, String descripcion, String metros, Localizacion localizacion) {
+        this.id = id;
+        this.edificioId = edificioId;
         this.metros = metros;
+        this.descripcion = descripcion;
+        this.localizacion=localizacion;
+
     }
 
     //GETS Y SETS
-    public String get_id() {
-        return _id;
+    public String getId() {
+        return id;
     }
 
-    public void set_id(String _id) {
-        this._id = _id;
+    public void setId(String id) {
+        this.id = id;
     }
 
-    public String getDescripcion() {
-        return descripcion;
+    public String getEdificioId() {
+        return edificioId;
     }
 
-    public void setDescripcion(String descripcion) {
-        this.descripcion = descripcion;
+    public void setEdificioId(String edificioId) {
+        this.edificioId = edificioId;
     }
 
-    public String getEdificio() {
-        return edificio;
+    public Localizacion getLocalizacion() {
+        return localizacion;
     }
-
-    public void setEdificio(String edificio) {
-        this.edificio = edificio;
-    }
-
-    public String getMetros() {
-        return metros;
-    }
-
-    public void setMetros(String metros) {
-        this.metros = metros;
+    public void setLocalizacion(Localizacion localizacion) {
+        this.localizacion = localizacion;
     }
 }

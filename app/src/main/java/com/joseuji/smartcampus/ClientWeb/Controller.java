@@ -9,7 +9,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class Controller  {
 
     public static final int REQUEST_CODE = 1234;
-    public static final String BASE_URL = "http://ujiapps.uji.es/lod-autorest/api/datasets/";
+    public static final String BASE_URL = "http://geo4.dlsi.uji.es:8008/";
 
     public RetrofitServices start() {
         Gson gson = new GsonBuilder()

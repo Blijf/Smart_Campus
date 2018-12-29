@@ -19,11 +19,11 @@ public class Consultas {
     //                                  GETS TO UJI OPENDATA
     //------------------------------------------------------------------------------------------
 
-    public static void getUbicaciones(RetrofitServices retrofitServices, final Context context)
+    public static void getUbicaciones(RetrofitServices retrofitServices, final Context context, String textobusqueda)
     {
             ubicaciones = new Ubicaciones();
 
-            Call<Ubicaciones> call = retrofitServices.getUbicaciones();
+            Call<Ubicaciones> call = retrofitServices.getLugares(textobusqueda);
 
             call.enqueue(new Callback<Ubicaciones>()
             {

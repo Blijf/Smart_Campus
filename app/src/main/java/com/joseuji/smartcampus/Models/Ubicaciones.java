@@ -4,8 +4,8 @@ import java.util.List;
 
 public class Ubicaciones
 {
-    private Paginacion page;
-    private List<Ubicacion> content;
+    private Paginacion paginacion;
+    private List<Ubicacion> datos;
     // Incluir otros campos
 
     public Ubicaciones()
@@ -13,24 +13,24 @@ public class Ubicaciones
 
     }
 
-    public Ubicaciones(Paginacion page, List<Ubicacion> content) {
-        this.page = page;
-        this.content = content;
+    public Ubicaciones(Paginacion paginacion, List<Ubicacion> datos) {
+        this.paginacion = paginacion;
+        this.datos = datos;
     }
 
-    public Paginacion getPage() {
-        return page;
+    public Paginacion getPaginacion() {
+        return paginacion;
     }
 
-    public void setPage(Paginacion page) {
-        this.page = page;
+    public void setPaginacion(Paginacion paginacion) {
+        this.paginacion = paginacion;
     }
 
-    public List<Ubicacion> getContent() {
-        return content;
+    public List<Ubicacion> getDatos() {
+        return datos;
     }
 
-    public void setContent(List<Ubicacion> content) {
-        this.content = content;
+    public void setDatos(List<Ubicacion> datos) {
+        this.datos = datos;
     }
 }

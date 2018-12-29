@@ -85,7 +85,7 @@ public class MainActivity extends AppCompatActivity {
     //Variables para rutas
     private GraphicsOverlay mGraphicsOverlay;
     private Point mStart;
-    private Point mEnd;
+    private Point mEnd;//=  new Point(4864935.06075, -7686.1280499994755,0.0);
 
     /**************************************************************************************************
      * *                                   ONCREATE()
@@ -180,20 +180,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v)
             {
-
-                    for (int i=0; i<=Consultas.ubicaciones.getContent().size(); i++)
-                    {
-                        ubicacion= Consultas.ubicaciones.getContent().get(i);
-
-                        if(ubicacion.getDescripcion().contains(etSearch.getText())||ubicacion.getEdificio().contains(etSearch.getText()))
-                        {
-                            textView.setText("existe");
-                        }
-                        else
-                        {
-                            textView.setText("No existe");
-                        }
-                    }
+                Consultas.getUbicaciones(retrofitServices, getApplicationContext(), String.valueOf(etSearch.getText()));
             }
 
         });
@@ -371,7 +358,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume()
     {
         super.onResume();
-        Consultas.getUbicaciones(retrofitServices,getApplicationContext());
 
         //volvemos a reubicar la ubicación actual tras quitar de primer plano la app(fijarse en ciclo de vida)
         setupLocationDisplay();
@@ -432,6 +418,7 @@ public class MainActivity extends AppCompatActivity {
         } else {
             // Both locations are set; re-set the start to the tapped location
             setStartMarker(location);
+            //findRoute();
         }
     }
 
