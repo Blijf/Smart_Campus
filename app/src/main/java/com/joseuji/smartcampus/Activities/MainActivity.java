@@ -181,8 +181,16 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v)
             {
                 Consultas.getUbicaciones(retrofitServices, getApplicationContext(), String.valueOf(etSearch.getText()));
+                Point busqueda=new Point(Consultas.latitud, Consultas.longitud,Consultas.altitud); //Punto buscado por el usuario
 
+                //Se marca en el mapa y se
+                setMapMarker(busqueda, SimpleMarkerSymbol.Style.DIAMOND, Color.rgb(226, 119, 40), Color.BLUE);
+                mEnd=busqueda;
 
+                Basemap.Type basemapType = Basemap.Type.STREETS_VECTOR;
+                int levelOfDetail = 17;
+                map = new ArcGISMap(basemapType, mEnd.getY(), mEnd.getX(), levelOfDetail);
+                mMapView.setMap(map);
             }
 
         });
@@ -401,12 +409,12 @@ public class MainActivity extends AppCompatActivity {
         mGraphicsOverlay.getGraphics().clear();
         setMapMarker(location, SimpleMarkerSymbol.Style.DIAMOND, Color.rgb(226, 119, 40), Color.BLUE);
         mStart = location;
-        mEnd = null;
+        //mEnd = null;
     }
 
     private void setEndMarker(Point location) {
         setMapMarker(location, SimpleMarkerSymbol.Style.SQUARE, Color.rgb(40, 119, 226), Color.RED);
-        //mEnd = location;
+        mEnd = location;
         //findRoute();
     }
 
@@ -417,14 +425,14 @@ public class MainActivity extends AppCompatActivity {
             findRoute();
         } else if (mEnd == null) {
             // End is not set, set it to the tapped location then find the route
-            location=new Point(Consultas.latitud, Consultas.longitud,Consultas.altitud);
+            //location=new Point(Consultas.latitud, Consultas.longitud,Consultas.altitud);
             setEndMarker(location);
-            findRoute();
+            //findRoute();
             //mEnd=new Point(Consultas.latitud, Consultas.longitud,Consultas.altitud);
-        } else {
+        /*} else {
             // Both locations are set; re-set the start to the tapped location
             setStartMarker(location);
-            //findRoute();
+            findRoute();*/
         }
     }
 

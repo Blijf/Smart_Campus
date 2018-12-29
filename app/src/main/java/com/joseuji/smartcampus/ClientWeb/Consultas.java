@@ -39,7 +39,8 @@ public class Consultas {
                         ubicaciones = response.body();
                         longitud= Consultas.ubicaciones.getDatos().get(0).getLocalizacion().getLatitud();
                         latitud= Consultas.ubicaciones.getDatos().get(0).getLocalizacion().getLongitud();
-                        altitud=Consultas.ubicaciones.getDatos().get(0).getLocalizacion().getAltitud();
+                        //altitud=Consultas.ubicaciones.getDatos().get(0).getLocalizacion().getAltitud();
+                        altitud=0.0;
                     }
                     else
                     {
