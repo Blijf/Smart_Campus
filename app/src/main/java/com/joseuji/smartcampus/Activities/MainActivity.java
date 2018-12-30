@@ -87,7 +87,9 @@ public class MainActivity extends AppCompatActivity {
     //Variables para rutas
     private GraphicsOverlay mGraphicsOverlay;
     private Point mStart;
-    private Point mEnd;//=  new Point(4864935.06075, -7686.1280499994755,0.0);
+    private Point mEnd;
+    private int defaultFloor = 0;   // Route computation needs x, y and z (floor)
+    // 1 for trying indoor, to try outdoor change it to 0
 
     /**************************************************************************************************
      * *                                   ONCREATE()
@@ -146,12 +148,14 @@ public class MainActivity extends AppCompatActivity {
                 if (isChecked)
                 {
                     tbBuildings.setBackgroundDrawable(getDrawable(R.drawable.buildings_on));
-                    SmartCampusLayers.buildings(mMapView);
+                    //SmartCampusLayers.buildings(mMapView);
+                    findRoute();
                 }
                 else
                 {
                     tbBuildings.setBackgroundDrawable(getDrawable(R.drawable.buildings_off));
-                    SmartCampusLayers.deleteBuildings();
+                    //SmartCampusLayers.deleteBuildings();
+                    findRoute();
                 }
             }
         });
@@ -215,7 +219,7 @@ public class MainActivity extends AppCompatActivity {
                 //Marca final de la ruta
                 setEndMarker(busqueda);
 
-                findRoute();//se define la ruta con un trazo
+                //findRoute();//se define la ruta con un trazo
 
             }
 
@@ -428,23 +432,31 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setStartMarker(Point location) {
-        mGraphicsOverlay.getGraphics().clear();
+        //mGraphicsOverlay.getGraphics().clear();
         setMapMarker(location, SimpleMarkerSymbol.Style.DIAMOND, Color.rgb(226, 119, 40), Color.BLUE);
         mStart = location;
-        mEnd = null;
+        //findRoute();
+        //mEnd = null;
     }
 
     public  void setEndMarker(Point location) {
+        mGraphicsOverlay.getGraphics().clear();
         setMapMarker(location, SimpleMarkerSymbol.Style.SQUARE, Color.rgb(40, 119, 226), Color.RED);
         mEnd = location;
-        findRoute();
+        //findRoute();
     }
 
     private void mapClicked(Point location) {
+        location = new Point(location.getX(), location.getY(), getZFromLevel(defaultFloor));
+        //setStartMarker(location);
+
         if (mStart == null) {
             // Start is not set, set it to a tapped location
             setStartMarker(location);
-//            findRoute();
+        }else if (mStart!=null){
+            mGraphicsOverlay.getGraphics().clear();
+            setEndMarker(mEnd);
+            setStartMarker(location);
         }
        /* else if (mEnd == null)
         {
@@ -459,6 +471,10 @@ public class MainActivity extends AppCompatActivity {
             setStartMarker(location);
             findRoute();
         }*/
+    }
+
+    public static float getZFromLevel(int level) {
+        return level*4 + 4;
     }
 
     private void setupOAuthManager() {
@@ -480,6 +496,56 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void findRoute() {
+        final RouteTask solveRouteTask = new RouteTask(getApplicationContext(), "http://smartcampus.sg.uji.es:6080/arcgis/rest/services/Network/GermanNet/NAServer/Route");
+        solveRouteTask.loadAsync();
+        solveRouteTask.addDoneLoadingListener(new Runnable() {
+            @Override
+            public void run() {
+                if (solveRouteTask.getLoadStatus() == LoadStatus.LOADED) {
+                    final ListenableFuture<RouteParameters> routeParamsFuture = solveRouteTask.createDefaultParametersAsync();
+                    routeParamsFuture.addDoneListener(new Runnable() {
+                        @Override
+                        public void run() {
+                            try {
+                                RouteParameters routeParameters = routeParamsFuture.get();
+                                List<Stop> stops = new ArrayList<>();
+                                stops.add(new Stop(mStart));
+                                stops.add(new Stop(mEnd));
+                                routeParameters.setStops(stops);
+
+                                final ListenableFuture<RouteResult> routeResultFuture = solveRouteTask.solveRouteAsync(routeParameters);
+                                routeResultFuture.addDoneListener(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        try {
+                                            RouteResult routeResult = routeResultFuture.get();
+                                            Route firstRoute = routeResult.getRoutes().get(0);
+
+                                            Polyline routePolyline = firstRoute.getRouteGeometry();
+                                            SimpleLineSymbol routeSymbol = new SimpleLineSymbol(SimpleLineSymbol.Style.SOLID, Color.BLUE, 4.0f);
+                                            Graphic routeGraphic = new Graphic(routePolyline, routeSymbol);
+                                            mGraphicsOverlay.getGraphics().add(routeGraphic);
+
+                                        } catch (InterruptedException | ExecutionException e) {
+                                            showError("Solve RouteTask failed " + e.getMessage());
+                                        }
+                                    }
+                                });
+
+                            } catch (InterruptedException | ExecutionException e) {
+                                showError("Cannot create RouteTask parameters " + e.getMessage());
+                            }
+                        }
+                    });
+                } else {
+                    showError("Unable to load RouteTask " + solveRouteTask.getLoadStatus().toString());
+                }
+            }
+        });
+    }
+
+
+   /* private void findRoute() {
         // Code from the next step goes here
 
         String routeServiceURI = getResources().getString(R.string.routing_url);
@@ -533,6 +599,6 @@ public class MainActivity extends AppCompatActivity {
             }
 
         });
-    }
+    }*/
 
 }
