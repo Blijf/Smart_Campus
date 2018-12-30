@@ -86,8 +86,8 @@
                 android:id="@+id/tgBuildings"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
-                android:checked="true"
-                android:background="@drawable/buildings_on" />
+                android:background="@android:drawable/ic_menu_myplaces"
+                android:checked="true" />
             <ToggleButton
                 android:id="@+id/tgFloors"
                 android:layout_width="40dp"

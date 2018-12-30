@@ -1,5 +1,6 @@
 package com.joseuji.smartcampus.Activities;
 
+import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.location.LocationManager;
@@ -8,6 +9,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Editable;
@@ -48,9 +50,7 @@ import com.esri.arcgisruntime.tasks.networkanalysis.Stop;
 import com.joseuji.smartcampus.ClientWeb.Consultas;
 import com.joseuji.smartcampus.ClientWeb.Controller;
 import com.joseuji.smartcampus.ClientWeb.RetrofitServices;
-import com.joseuji.smartcampus.Models.Asignaturas;
 import com.joseuji.smartcampus.Models.Ubicacion;
-import com.joseuji.smartcampus.Models.Ubicaciones;
 import com.joseuji.smartcampus.R;
 import com.joseuji.smartcampus.Utils.SmartCampusLayers;
 
@@ -58,10 +58,6 @@ import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
-
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 import static android.Manifest.permission.ACCESS_COARSE_LOCATION;
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
@@ -139,9 +135,16 @@ public class MainActivity extends AppCompatActivity {
         /**************************************************************************************************
          * *                                   BOTONES
          * *********************************************************************************************/
+
+
+
+
         tbBuildings.setText(null);
         tbBuildings.setTextOn(null);
         tbBuildings.setTextOff(null);
+
+
+
         tbBuildings.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -159,6 +162,7 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
+
         tbFloors.setText(null);
         tbFloors.setTextOn(null);
         tbFloors.setTextOff(null);
@@ -217,7 +221,7 @@ public class MainActivity extends AppCompatActivity {
                 Point busqueda= Consultas.getPuntoBusqueda(retrofitServices, getApplicationContext(), String.valueOf(etSearch.getText()));
 
                 //Marca final de la ruta
-                setEndMarker(busqueda);
+                setEndMarker(busqueda, SimpleMarkerSymbol.Style.DIAMOND, Color.rgb(40, 119, 226), Color.RED);
 
                 //findRoute();//se define la ruta con un trazo
 
@@ -423,7 +427,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void setMapMarker(Point location, SimpleMarkerSymbol.Style style, int markerColor, int outlineColor) {
-        float markerSize = 8.0f;
+        float markerSize = 10.0f;
         float markerOutlineThickness = 2.0f;
         SimpleMarkerSymbol pointSymbol = new SimpleMarkerSymbol(style, markerColor, markerSize);
         pointSymbol.setOutline(new SimpleLineSymbol(SimpleLineSymbol.Style.SOLID, outlineColor, markerOutlineThickness));
@@ -439,9 +443,10 @@ public class MainActivity extends AppCompatActivity {
         //mEnd = null;
     }
 
-    public  void setEndMarker(Point location) {
+    public  void setEndMarker(Point location, SimpleMarkerSymbol.Style diamond, int rgb, int red) {
         mGraphicsOverlay.getGraphics().clear();
-        setMapMarker(location, SimpleMarkerSymbol.Style.SQUARE, Color.rgb(40, 119, 226), Color.RED);
+        //setMapMarker(location, SimpleMarkerSymbol.Style.SQUARE, Color.rgb(40, 119, 226), Color.RED);
+        setMapMarker(location,SimpleMarkerSymbol.Style.DIAMOND, Color.rgb(40, 119, 226), Color.RED);
         mEnd = location;
         //findRoute();
     }
@@ -455,7 +460,7 @@ public class MainActivity extends AppCompatActivity {
             setStartMarker(location);
         }else if (mStart!=null){
             mGraphicsOverlay.getGraphics().clear();
-            setEndMarker(mEnd);
+            setEndMarker(mEnd, SimpleMarkerSymbol.Style.DIAMOND, Color.rgb(40, 119, 226), Color.RED);
             setStartMarker(location);
         }
        /* else if (mEnd == null)
@@ -525,6 +530,14 @@ public class MainActivity extends AppCompatActivity {
                                             SimpleLineSymbol routeSymbol = new SimpleLineSymbol(SimpleLineSymbol.Style.SOLID, Color.BLUE, 4.0f);
                                             Graphic routeGraphic = new Graphic(routePolyline, routeSymbol);
                                             mGraphicsOverlay.getGraphics().add(routeGraphic);
+
+                                            long lengthInKm = Math.round(firstRoute.getTotalLength() / 1000);
+                                            long lengthInmeters = Math.round(firstRoute.getTotalLength());
+                                            long timeInMinutes = Math.round(firstRoute.getTravelTime()*60);
+
+                                            Toast.makeText(getApplicationContext(),
+                                                    "Distancia Total: " + lengthInmeters+ " metros", Toast.LENGTH_LONG)
+                                                    .show();
 
                                         } catch (InterruptedException | ExecutionException e) {
                                             showError("Solve RouteTask failed " + e.getMessage());
