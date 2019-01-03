@@ -76,7 +76,8 @@ public class MainActivity extends AppCompatActivity {
     private ToggleButton tbBuildings, tbFloors;
     private Controller controller;
     private EditText etSearch;
-    private Button btSearch,btFloorS, btFloor0, btFloor1,btFloor2,btFloor3,btFloor4,btFloor5,btFloor6;
+    private Button btSearch;
+    private ToggleButton tgFloor0,tgFloorS, tgFloor1,tgFloor2,tgFloor3,tgFloor4,tgFloor5,tgFloor6;
     private LinearLayout linearLayoutFloors;
     ArcGISMap map;
 
@@ -104,8 +105,8 @@ public class MainActivity extends AppCompatActivity {
         tbFloors= findViewById(R.id.tgFloors);
         etSearch= findViewById(R.id.etSearch);
         btSearch= findViewById(R.id.btSearch);
-        btFloorS=findViewById(R.id.tgFloorS);btFloor0=findViewById(R.id.tgFloor0);btFloor1=findViewById(R.id.tgFloor1);btFloor2=findViewById(R.id.tgFloor2);
-        btFloor3=findViewById(R.id.tgFloor3);btFloor4=findViewById(R.id.tgFloor4);btFloor5=findViewById(R.id.tgFloor5);btFloor6=findViewById(R.id.tgFloor6);
+        tgFloorS=findViewById(R.id.tgFloorS);tgFloor0=findViewById(R.id.tgFloor0);tgFloor1=findViewById(R.id.tgFloor1);tgFloor2=findViewById(R.id.tgFloor2);
+        tgFloor3=findViewById(R.id.tgFloor3);tgFloor4=findViewById(R.id.tgFloor4);tgFloor5=findViewById(R.id.tgFloor5);tgFloor6=findViewById(R.id.tgFloor6);
         textView= findViewById(R.id.tvTexto);
         linearLayoutFloors=findViewById(R.id.linearLayoutFloors);
         controller = new Controller();
@@ -135,16 +136,9 @@ public class MainActivity extends AppCompatActivity {
         /**************************************************************************************************
          * *                                   BOTONES
          * *********************************************************************************************/
-
-
-
-
         tbBuildings.setText(null);
         tbBuildings.setTextOn(null);
         tbBuildings.setTextOff(null);
-
-
-
         tbBuildings.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -232,85 +226,128 @@ public class MainActivity extends AppCompatActivity {
         //----------------------------------------------------------------------------------------
         //                                      PISOS
         //----------------------------------------------------------------------------------------
-        btFloorS.setOnClickListener(new View.OnClickListener() {
+        tgFloorS.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
-            public void onClick(View v)
-            {
-                SmartCampusLayers.deleteFloors();//borramos las capas de los otros pisos
-                SmartCampusLayers.quePlanta(mMapView,1);//plano
-                SmartCampusLayers.quePlanta(mMapView,2);//Interior Spaces
-            }
-        });
-        btFloor0.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v)
-            {
-                SmartCampusLayers.deleteFloors();//borramos las capas de los otros pisos
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if(isChecked)
+                {
+                    SmartCampusLayers.deleteFloors();//borramos las capas de los otros pisos
+                    SmartCampusLayers.quePlanta(mMapView,1);//plano
+                    SmartCampusLayers.quePlanta(mMapView,2);//Interior Spaces
 
+                    tgFloor0.setChecked(false);tgFloor1.setChecked(false);tgFloor2.setChecked(false);
+                    tgFloor3.setChecked(false);tgFloor4.setChecked(false);tgFloor5.setChecked(false);
+                    tgFloor6.setChecked(false);
+                }
+            }
+        });
+        tgFloor0.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if(isChecked)
+                {
+                    SmartCampusLayers.deleteFloors();//borramos las capas de los otros pisos
+                    SmartCampusLayers.quePlanta(mMapView,4);//plano
+                    SmartCampusLayers.quePlanta(mMapView,5);//Interior Spaces
 
-                SmartCampusLayers.quePlanta(mMapView,4);//plano
-                SmartCampusLayers.quePlanta(mMapView,5);//Interior Spaces
+                    tgFloorS.setChecked(false);tgFloor1.setChecked(false);tgFloor2.setChecked(false);
+                    tgFloor3.setChecked(false);tgFloor4.setChecked(false);tgFloor5.setChecked(false);
+                    tgFloor6.setChecked(false);
+                }
             }
         });
-        btFloor1.setOnClickListener(new View.OnClickListener() {
+        tgFloor1.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
-            public void onClick(View v)
-            {
-                SmartCampusLayers.deleteFloors();//borramos las capas de los otros pisos
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if(isChecked)
+                {
+                    SmartCampusLayers.deleteFloors();//borramos las capas de los otros pisos
+                    SmartCampusLayers.quePlanta(mMapView,7);//plano
+                    SmartCampusLayers.quePlanta(mMapView,8);//Interior Spaces
 
-                SmartCampusLayers.quePlanta(mMapView,7);//plano
-                SmartCampusLayers.quePlanta(mMapView,8);//Interior Spaces
-            }
-        });
-        btFloor2.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v)
-            {
-                SmartCampusLayers.deleteFloors();//borramos las capas de los otros pisos
-                SmartCampusLayers.quePlanta(mMapView,10);//plano
-                SmartCampusLayers.quePlanta(mMapView,11);//Interior Spaces
-            }
-        });
-        btFloor3.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v)
-            {
-                SmartCampusLayers.deleteFloors();//borramos las capas de los otros pisos
-
-                SmartCampusLayers.quePlanta(mMapView,13);//plano
-                SmartCampusLayers.quePlanta(mMapView,14);//Interior Spaces
-            }
-        });
-        btFloor4.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v)
-            {
-                SmartCampusLayers.deleteFloors();//borramos las capas de los otros pisos
-
-                SmartCampusLayers.quePlanta(mMapView,16);//plano
-                SmartCampusLayers.quePlanta(mMapView,17);//Interior Spaces
-            }
-        });
-        btFloor5.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v)
-            {
-                SmartCampusLayers.deleteFloors();//borramos las capas de los otros pisos
-                SmartCampusLayers.quePlanta(mMapView,19);//plano
-                SmartCampusLayers.quePlanta(mMapView,20);//Interior Spaces
-            }
-        });
-        btFloor6.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v)
-            {
-
-                SmartCampusLayers.deleteFloors();//borramos las capas de los otros pisos
-                SmartCampusLayers.quePlanta(mMapView,22);//plano
-                SmartCampusLayers.quePlanta(mMapView,23);//Interior Spaces
+                    tgFloor0.setChecked(false);tgFloorS.setChecked(false);tgFloor2.setChecked(false);
+                    tgFloor3.setChecked(false);tgFloor4.setChecked(false);tgFloor5.setChecked(false);
+                    tgFloor6.setChecked(false);
+                }
             }
         });
 
+        tgFloor2.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if(isChecked)
+                {
+                    SmartCampusLayers.deleteFloors();//borramos las capas de los otros pisos
+                    SmartCampusLayers.quePlanta(mMapView,10);//plano
+                    SmartCampusLayers.quePlanta(mMapView,11);//Interior Spaces
+
+                    tgFloor0.setChecked(false);tgFloorS.setChecked(false);tgFloorS.setChecked(false);
+                    tgFloor3.setChecked(false);tgFloor4.setChecked(false);tgFloor5.setChecked(false);
+                    tgFloor6.setChecked(false);
+                }
+            }
+        });
+
+        tgFloor3.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if(isChecked)
+                {
+                    SmartCampusLayers.deleteFloors();//borramos las capas de los otros pisos
+                    SmartCampusLayers.quePlanta(mMapView,13);//plano
+                    SmartCampusLayers.quePlanta(mMapView,14);//Interior Spaces
+
+                    tgFloor0.setChecked(false);tgFloorS.setChecked(false);tgFloor2.setChecked(false);
+                    tgFloorS.setChecked(false);tgFloor4.setChecked(false);tgFloor5.setChecked(false);
+                    tgFloor6.setChecked(false);
+                }
+            }
+        });
+        tgFloor4.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if(isChecked)
+                {
+                    SmartCampusLayers.deleteFloors();//borramos las capas de los otros pisos
+                    SmartCampusLayers.quePlanta(mMapView,16);//plano
+                    SmartCampusLayers.quePlanta(mMapView,17);//Interior Spacess
+
+                    tgFloor0.setChecked(false);tgFloorS.setChecked(false);tgFloor2.setChecked(false);
+                    tgFloor3.setChecked(false);tgFloorS.setChecked(false);tgFloor5.setChecked(false);
+                    tgFloor6.setChecked(false);
+                }
+            }
+        });
+        tgFloor5.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if(isChecked)
+                {
+                    SmartCampusLayers.deleteFloors();//borramos las capas de los otros pisos
+                    SmartCampusLayers.quePlanta(mMapView,19);//plano
+                    SmartCampusLayers.quePlanta(mMapView,20);//Interior Spaces
+
+                    tgFloor0.setChecked(false);tgFloorS.setChecked(false);tgFloor2.setChecked(false);
+                    tgFloor3.setChecked(false);tgFloor4.setChecked(false);tgFloorS.setChecked(false);
+                    tgFloor6.setChecked(false);
+                }
+            }
+        });
+        tgFloor6.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if(isChecked)
+                {
+                    SmartCampusLayers.deleteFloors();//borramos las capas de los otros pisos
+                    SmartCampusLayers.quePlanta(mMapView,22);//plano
+                    SmartCampusLayers.quePlanta(mMapView,23);//Interior Spaces
+
+                    tgFloor0.setChecked(false);tgFloorS.setChecked(false);tgFloor2.setChecked(false);
+                    tgFloor3.setChecked(false);tgFloor4.setChecked(false);tgFloor5.setChecked(false);
+                    tgFloorS.setChecked(false);
+                }
+            }
+        });
 
         // Rutas
         createGraphicsOverlay();

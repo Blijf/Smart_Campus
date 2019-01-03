@@ -86,7 +86,7 @@
                 android:id="@+id/tgBuildings"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
-                android:background="@android:drawable/ic_menu_myplaces"
+                android:background="@drawable/buildings_off"
                 android:checked="true" />
             <ToggleButton
                 android:id="@+id/tgFloors"
@@ -105,57 +105,63 @@
             android:layout_marginLeft="10dp"
             android:orientation="vertical">
 
-            <Button
+            <ToggleButton
                 android:id="@+id/tgFloor6"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
+                style="@style/FloorButton"
+                android:textOn="6"
+                android:textOff="6"
                 android:text="6"
                 />
-            <Button
+            <ToggleButton
                 android:id="@+id/tgFloor5"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
+                style="@style/FloorButton"
+                android:textOn="5"
+                android:textOff="5"
                 android:text="5"
                 />
-
-
-            <Button
+            <ToggleButton
                 android:id="@+id/tgFloor4"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
+                style="@style/FloorButton"
+                android:textOn="4"
+                android:textOff="4"
                 android:text="4"
                 />
-            <Button
+            <ToggleButton
                 android:id="@+id/tgFloor3"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
+                style="@style/FloorButton"
+                android:textOn="3"
+                android:textOff="3"
                 android:text="3"
                 />
-            <Button
+            <ToggleButton
                 android:id="@+id/tgFloor2"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
+                style="@style/FloorButton"
+                android:textOn="2"
+                android:textOff="2"
                 android:text="2"
                 />
-            <Button
+            <ToggleButton
                 android:id="@+id/tgFloor1"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
+                style="@style/FloorButton"
+                android:textOn="1"
+                android:textOff="1"
                 android:text="1"
                 />
-            <Button
-            android:id="@+id/tgFloor0"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:text="0"
-            />
-            <Button
+            <ToggleButton
+                android:id="@+id/tgFloor0"
+                style="@style/FloorButton"
+                android:textOn="0"
+                android:textOff="0"
+                android:text="0"
+                android:checked="true"
+                />
+            <ToggleButton
                 android:id="@+id/tgFloorS"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
+                style="@style/FloorButton"
+                android:textOn="S"
+                android:textOff="S"
                 android:text="S"
                 />
-
         </LinearLayout>
 
 
