@@ -2,4 +2,6 @@
     <string name="app_name">SmartCampus</string>
     <string name="action_settings">Settings</string>
     <string name="location_permission_denied">Conecta la ubicación</string>
+    <string name="sample_service_url">https://sampleserver6.arcgisonline.com/arcgis/rest/services/Recreation/FeatureServer/0</string>
+
 </resources>

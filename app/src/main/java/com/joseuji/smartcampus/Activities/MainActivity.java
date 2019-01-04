@@ -90,7 +90,7 @@ public class MainActivity extends AppCompatActivity {
     private ToggleButton tbBuildings, tbFloors;
     private Controller controller;
     private EditText etSearch;
-    private Button btSearch;
+    private Button btSearch,btUbication,btRute,btDeleteRute;
     private ToggleButton tgFloor0,tgFloorS, tgFloor1,tgFloor2,tgFloor3,tgFloor4,tgFloor5,tgFloor6;
     private LinearLayout linearLayoutFloors;
     ArcGISMap map;
@@ -124,10 +124,11 @@ public class MainActivity extends AppCompatActivity {
         tbBuildings= findViewById(R.id.tgBuildings);
         tbFloors= findViewById(R.id.tgFloors);
         etSearch= findViewById(R.id.etSearch);
-        btSearch= findViewById(R.id.btSearch);
+        btSearch= findViewById(R.id.btSearch);btUbication= findViewById(R.id.btUbication);btRute= findViewById(R.id.btRute);
+        btDeleteRute= findViewById(R.id.btDelete);
         tgFloorS=findViewById(R.id.tgFloorS);tgFloor0=findViewById(R.id.tgFloor0);tgFloor1=findViewById(R.id.tgFloor1);tgFloor2=findViewById(R.id.tgFloor2);
         tgFloor3=findViewById(R.id.tgFloor3);tgFloor4=findViewById(R.id.tgFloor4);tgFloor5=findViewById(R.id.tgFloor5);tgFloor6=findViewById(R.id.tgFloor6);
-        textView= findViewById(R.id.tvTexto);
+//        textView= findViewById(R.id.tvTexto);
         linearLayoutFloors=findViewById(R.id.linearLayoutFloors);
         controller = new Controller();
         retrofitServices=controller.start();
@@ -156,6 +157,41 @@ public class MainActivity extends AppCompatActivity {
         /**************************************************************************************************
          * *                                   BOTONES
          * *********************************************************************************************/
+        btUbication.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v)
+            {
+                mStart=mLocationDisplay.getMapLocation();
+            }
+        });
+
+        //se calcula la ruta teniendo un punto start y end
+        btRute.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v)
+            {
+                if(mStart!=null && mEnd!=null)
+                {
+
+                     findRoute();
+                }
+                else
+                {
+                    Toast.makeText(MainActivity.this, "Se necesita el punto inicial y final para encontrar la ruta", Toast.LENGTH_LONG).show();
+                }
+            }
+        });
+
+        btDeleteRute.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //Se limpian rutas y puntos en el mapa
+                mEnd=null;
+                mStart=null;
+                mGraphicsOverlay.getGraphics().clear();
+            }
+        });
+
         tbBuildings.setText(null);
         tbBuildings.setTextOn(null);
         tbBuildings.setTextOff(null);
@@ -165,14 +201,12 @@ public class MainActivity extends AppCompatActivity {
                 if (isChecked)
                 {
                     tbBuildings.setBackgroundDrawable(getDrawable(R.drawable.buildings_on));
-                    //SmartCampusLayers.buildings(mMapView);
-                    findRoute();
+                    SmartCampusLayers.buildings(mMapView);
                 }
                 else
                 {
                     tbBuildings.setBackgroundDrawable(getDrawable(R.drawable.buildings_off));
-                    //SmartCampusLayers.deleteBuildings();
-                    findRoute();
+                    SmartCampusLayers.deleteBuildings();
                 }
             }
         });
@@ -392,17 +426,12 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-
-
-
-
-
-
     }
     /**************************************************************************************************
      * *                                   MÉTODOS
      * *********************************************************************************************/
-    private void setupMap(double latitude, double longitude) {
+    private void setupMap(double latitude, double longitude)
+    {
         if (mMapView != null) {
 
 //             If online basemap is desirable, uncomment the following lines
@@ -427,7 +456,8 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void setupLocationDisplay() {
+    private void setupLocationDisplay()
+    {
         mLocationDisplay = mMapView.getLocationDisplay();
 
         // If a different (from default) location source is required, uncomment and make proper changes to the following line
@@ -563,7 +593,7 @@ public class MainActivity extends AppCompatActivity {
         }*/
     }
 
-private void mostrarInfo() {
+    private void mostrarInfo() {
     // set an on touch listener to listen for click events
     mMapView.setOnTouchListener(new DefaultMapViewOnTouchListener(this, mMapView) {
         @Override

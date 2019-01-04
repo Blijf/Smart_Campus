@@ -11,15 +11,15 @@
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-        <TextView
-            android:id="@+id/tvTexto"
-            android:layout_width="150dp"
-            android:layout_height="50dp"
-            android:layout_gravity="center_vertical"
-            android:background="@color/colorTransparentWhite"
-            android:layout_margin="15dp"
-            android:text="Resultado "
-            android:gravity="center"/>
+        <!--<TextView-->
+            <!--android:id="@+id/tvTexto"-->
+            <!--android:layout_width="150dp"-->
+            <!--android:layout_height="50dp"-->
+            <!--android:layout_gravity="center_vertical"-->
+            <!--android:background="@color/colorTransparentWhite"-->
+            <!--android:layout_margin="15dp"-->
+            <!--android:text="Resultado "-->
+            <!--android:gravity="center"/>-->
         <!--__________________________________________________________________________-->
         <!--MAPA-->
         <!--__________________________________________________________________________-->
@@ -27,8 +27,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@null"
-            android:orientation="vertical"
-            >
+            android:orientation="vertical">
 
 
             <com.esri.arcgisruntime.mapping.view.MapView
@@ -87,13 +86,30 @@
                 android:layout_width="40dp"
                 android:layout_height="40dp"
                 android:background="@drawable/buildings_off"
-                android:checked="true" />
+                android:checked="false" />
             <ToggleButton
                 android:id="@+id/tgFloors"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
                 android:checked="true"
                 android:background="@drawable/floors_on" />
+
+            <Button
+                android:id="@+id/btRute"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:background="@android:drawable/ic_menu_myplaces" />
+            <Button
+                android:id="@+id/btDelete"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:background="@android:drawable/ic_menu_delete" />
+            <Button
+                android:id="@+id/btUbication"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:background="@android:drawable/ic_menu_mylocation" />
+
 
         </LinearLayout>
         <LinearLayout
