@@ -85,8 +85,6 @@ public class MainActivity extends AppCompatActivity {
     private RetrofitServices retrofitServices;
     private MapView mMapView;
     private LocationDisplay mLocationDisplay;
-    private Ubicacion ubicacion;
-    private TextView textView;
     private ToggleButton tbBuildings, tbFloors;
     private Controller controller;
     private EditText etSearch;
@@ -128,7 +126,6 @@ public class MainActivity extends AppCompatActivity {
         btDeleteRute= findViewById(R.id.btDelete);
         tgFloorS=findViewById(R.id.tgFloorS);tgFloor0=findViewById(R.id.tgFloor0);tgFloor1=findViewById(R.id.tgFloor1);tgFloor2=findViewById(R.id.tgFloor2);
         tgFloor3=findViewById(R.id.tgFloor3);tgFloor4=findViewById(R.id.tgFloor4);tgFloor5=findViewById(R.id.tgFloor5);tgFloor6=findViewById(R.id.tgFloor6);
-//        textView= findViewById(R.id.tvTexto);
         linearLayoutFloors=findViewById(R.id.linearLayoutFloors);
         controller = new Controller();
         retrofitServices=controller.start();
@@ -140,23 +137,17 @@ public class MainActivity extends AppCompatActivity {
 
         //addLayers
         SmartCampusLayers.baseBuildings(mMapView);
-//      SmartCampusLayers.addFloorRooms(mMapView);
-//      SmartCampusLayers.addFloorInfo(map, mMapView);
 
         //Se muestran los planos y la info de la planta cero al iniciar la Aplicación
         SmartCampusLayers.quePlanta(mMapView,4);//plano
         SmartCampusLayers.quePlanta(mMapView,5);//Interior Spaces
-        //----------------------------------------------------------------------------------
-        //                              CONSULTAS
-        //----------------------------------------------------------------------------------
-//        Consultas.getUbicaciones(retrofitServices,getApplicationContext());
-//        Consultas.getAsignaturas(retrofitServices,getApplicationContext());
 
 
         //----------------------------------------------------------------------------------
         /**************************************************************************************************
          * *                                   BOTONES
          * *********************************************************************************************/
+        //Ubica el punto inical con la ubicación actual
         btUbication.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v)
@@ -165,7 +156,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        //se calcula la ruta teniendo un punto start y end
+        //Se calcula la ruta teniendo un punto start y end
         btRute.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v)
@@ -182,6 +173,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        //Borramos la ruta generada poniendo los valore a cero
         btDeleteRute.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -192,6 +184,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        //Capa que muestra el nombre de los edificios y destaca estos con un color
         tbBuildings.setText(null);
         tbBuildings.setTextOn(null);
         tbBuildings.setTextOff(null);
@@ -211,6 +204,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        //Activa o desactiva la capa y botones de pisos
         tbFloors.setText(null);
         tbFloors.setTextOn(null);
         tbFloors.setTextOff(null);
@@ -236,7 +230,7 @@ public class MainActivity extends AppCompatActivity {
         //----------------------------------------------------------------------------------------
         //                                     BÚSCADOR
         //----------------------------------------------------------------------------------------
-        //edit text, de esta forma se espera a que la consulta en cola se realice
+        //edit text, se introduce el sitio a buscar
         etSearch.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -259,15 +253,13 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
+        //realizamos la búsqueda del texto introducido en etSearch.
         btSearch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v)
             {
-                //Marca el punto inicial de la ruta, según la ubicación.
-//                setStartMarker(mLocationDisplay.getMapLocation());
-
-
                 try {
+                    //Punto de búsqueda
                     Point  busqueda = Consultas.getPuntoBusqueda(retrofitServices, getApplicationContext(), String.valueOf(etSearch.getText()));
                     //Marca final de la ruta
                     setEndMarker(busqueda, SimpleMarkerSymbol.Style.DIAMOND, Color.rgb(40, 119, 226), Color.RED);
@@ -287,6 +279,8 @@ public class MainActivity extends AppCompatActivity {
         //----------------------------------------------------------------------------------------
         //                                      PISOS
         //----------------------------------------------------------------------------------------
+        //Botones de los pisos, los cuales muestran el plano de edificación y el plano con las aulas... del interior
+
         tgFloorS.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -430,6 +424,7 @@ public class MainActivity extends AppCompatActivity {
     /**************************************************************************************************
      * *                                   MÉTODOS
      * *********************************************************************************************/
+    //Párametros y características del mapa (por defecto)
     private void setupMap(double latitude, double longitude)
     {
         if (mMapView != null) {
@@ -456,6 +451,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    //Mostramos el punto de la ubicación actual según la red que este conectada
     private void setupLocationDisplay()
     {
         mLocationDisplay = mMapView.getLocationDisplay();
@@ -533,7 +529,8 @@ public class MainActivity extends AppCompatActivity {
                                   MÉTODOS PARA RUTAS
      * *********************************************************************************************/
 
-    private void createGraphicsOverlay() {
+    private void createGraphicsOverlay()
+    {
         mGraphicsOverlay = new GraphicsOverlay();
         mMapView.getGraphicsOverlays().add(mGraphicsOverlay);
     }
@@ -592,84 +589,6 @@ public class MainActivity extends AppCompatActivity {
             findRoute();
         }*/
     }
-
-    private void mostrarInfo() {
-    // set an on touch listener to listen for click events
-    mMapView.setOnTouchListener(new DefaultMapViewOnTouchListener(this, mMapView) {
-        @Override
-        public boolean onSingleTapConfirmed(MotionEvent e) {
-            // remove any existing callouts
-            if (mCallout.isShowing()) {
-                mCallout.dismiss();
-            }
-            // get the point that was clicked and convert it to a point in map coordinates
-            final Point clickPoint = mMapView
-                    .screenToLocation(new android.graphics.Point(Math.round(e.getX()), Math.round(e.getY())));
-            // create a selection tolerance
-            int tolerance = 10;
-            double mapTolerance = tolerance * mMapView.getUnitsPerDensityIndependentPixel();
-            // use tolerance to create an envelope to query
-            Envelope envelope = new Envelope(clickPoint.getX() - mapTolerance, clickPoint.getY() - mapTolerance,
-                    clickPoint.getX() + mapTolerance, clickPoint.getY() + mapTolerance, map.getSpatialReference());
-            QueryParameters query = new QueryParameters();
-            query.setGeometry(envelope);
-            // request all available attribute fields
-            final ListenableFuture<FeatureQueryResult> future = mServiceFeatureTable
-                    .queryFeaturesAsync(query, ServiceFeatureTable.QueryFeatureFields.LOAD_ALL);
-            // add done loading listener to fire when the selection returns
-            future.addDoneListener(new Runnable() {
-                @Override
-                public void run() {
-                    try {
-                        //call get on the future to get the result
-                        FeatureQueryResult result = future.get();
-                        // create an Iterator
-                        Iterator<Feature> iterator = result.iterator();
-                        // create a TextView to display field values
-                        TextView calloutContent = new TextView(getApplicationContext());
-                        calloutContent.setTextColor(Color.BLACK);
-                        calloutContent.setSingleLine(false);
-                        calloutContent.setVerticalScrollBarEnabled(true);
-                        calloutContent.setScrollBarStyle(View.SCROLLBARS_INSIDE_INSET);
-                        calloutContent.setMovementMethod(new ScrollingMovementMethod());
-                        calloutContent.setLines(5);
-                        // cycle through selections
-                        int counter = 0;
-                        Feature feature;
-                        while (iterator.hasNext()) {
-                            feature = iterator.next();
-                            // create a Map of all available attributes as name value pairs
-                            Map<String, Object> attr = feature.getAttributes();
-                            Set<String> keys = attr.keySet();
-                            for (String key : keys) {
-                                Object value = attr.get(key);
-                                // format observed field value as date
-                                if (value instanceof GregorianCalendar) {
-                                    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MMM-yyyy", Locale.US);
-                                    value = simpleDateFormat.format(((GregorianCalendar) value).getTime());
-                                }
-                                // append name value pairs to TextView
-                                calloutContent.append(key + " | " + value + "\n");
-                            }
-                            counter++;
-                            // center the mapview on selected feature
-                            Envelope envelope = feature.getGeometry().getExtent();
-                            mMapView.setViewpointGeometryAsync(envelope, 200);
-                            // show CallOut
-                            mCallout.setLocation(clickPoint);
-                            mCallout.setContent(calloutContent);
-                            mCallout.show();
-                        }
-                    } catch (Exception e) {
-                        Log.e(getResources().getString(R.string.app_name), "Select feature failed: " + e.getMessage());
-                    }
-                }
-            });
-            return super.onSingleTapConfirmed(e);
-        }
-    });
-
-}
 
     public static float getZFromLevel(int level) {
         return level*4 + 4;
@@ -749,62 +668,5 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
-
-
-   /* private void findRoute() {
-        // Code from the next step goes here
-
-        String routeServiceURI = getResources().getString(R.string.routing_url);
-        //final RouteTask solveRouteTask = new RouteTask(getApplicationContext(), routeServiceURI);
-        //final RouteTask solveRouteTask = new RouteTask(getApplicationContext(), "http://smartcampus.sg.uji.es:6080/arcgis/rest/services/Network/GermanNet/NAServer/Route");
-        final RouteTask solveRouteTask = new RouteTask(getApplicationContext(), "http://smartcampus.sg.uji.es:6080/arcgis/rest/services/Network/GermanNet/NAServer/Route");
-
-
-        solveRouteTask.loadAsync();
-        solveRouteTask.addDoneLoadingListener(() -> {
-
-            // Code from the next step goes here
-            if (solveRouteTask.getLoadStatus() == LoadStatus.LOADED) {
-                final ListenableFuture<RouteParameters> routeParamsFuture = solveRouteTask.createDefaultParametersAsync();
-                routeParamsFuture.addDoneListener(() -> {
-                    try {
-                        RouteParameters routeParameters = routeParamsFuture.get();
-                        List<Stop> stops = new ArrayList<>();
-                        stops.add(new Stop(mStart));
-                        stops.add(new Stop(mEnd));
-                        routeParameters.setStops(stops);
-                        // Code from the next step goes here
-                        final ListenableFuture<RouteResult> routeResultFuture = solveRouteTask.solveRouteAsync(routeParameters);
-                        //routeResultFuture.addDoneListener(() -> {
-                        routeResultFuture.addDoneListener(new Runnable() {
-                                @Override
-                                public void run() {
-                                    try {
-                                        RouteResult routeResult = routeResultFuture.get();
-                                        Route firstRoute = routeResult.getRoutes().get(0);
-                                        // Code from the next step goes here
-
-                                        Polyline routePolyline = firstRoute.getRouteGeometry();
-                                        SimpleLineSymbol routeSymbol = new SimpleLineSymbol(SimpleLineSymbol.Style.SOLID, Color.BLUE, 4.0f);
-                                        Graphic routeGraphic = new Graphic(routePolyline, routeSymbol);
-                                        mGraphicsOverlay.getGraphics().add(routeGraphic);
-
-                                    } catch (InterruptedException | ExecutionException e) {
-                                        showError("Solve RouteTask failed " + e.getMessage());
-                                    }
-                                }
-                        });
-
-
-                    } catch (InterruptedException | ExecutionException e) {
-                        showError("Cannot create RouteTask parameters " + e.getMessage());
-                    }
-                });
-            } else {
-                showError("Unable to load RouteTask " + solveRouteTask.getLoadStatus().toString());
-            }
-
-        });
-    }*/
 
 }
