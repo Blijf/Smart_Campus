@@ -152,7 +152,8 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v)
             {
-                mStart=mLocationDisplay.getMapLocation();
+                setStartMarker(mLocationDisplay.getMapLocation());
+
             }
         });
 
@@ -335,7 +336,7 @@ public class MainActivity extends AppCompatActivity {
                     SmartCampusLayers.quePlanta(mMapView,10);//plano
                     SmartCampusLayers.quePlanta(mMapView,11);//Interior Spaces
 
-                    tgFloor0.setChecked(false);tgFloorS.setChecked(false);tgFloorS.setChecked(false);
+                    tgFloor0.setChecked(false);tgFloor1.setChecked(false);tgFloorS.setChecked(false);
                     tgFloor3.setChecked(false);tgFloor4.setChecked(false);tgFloor5.setChecked(false);
                     tgFloor6.setChecked(false);
                 }
@@ -350,7 +351,7 @@ public class MainActivity extends AppCompatActivity {
                     SmartCampusLayers.quePlanta(mMapView,13);//plano
                     SmartCampusLayers.quePlanta(mMapView,14);//Interior Spaces
 
-                    tgFloor0.setChecked(false);tgFloorS.setChecked(false);tgFloor2.setChecked(false);
+                    tgFloor0.setChecked(false);tgFloor1.setChecked(false);tgFloor2.setChecked(false);
                     tgFloorS.setChecked(false);tgFloor4.setChecked(false);tgFloor5.setChecked(false);
                     tgFloor6.setChecked(false);
                 }
@@ -365,7 +366,7 @@ public class MainActivity extends AppCompatActivity {
                     SmartCampusLayers.quePlanta(mMapView,16);//plano
                     SmartCampusLayers.quePlanta(mMapView,17);//Interior Spacess
 
-                    tgFloor0.setChecked(false);tgFloorS.setChecked(false);tgFloor2.setChecked(false);
+                    tgFloor0.setChecked(false);tgFloor1.setChecked(false);tgFloor2.setChecked(false);
                     tgFloor3.setChecked(false);tgFloorS.setChecked(false);tgFloor5.setChecked(false);
                     tgFloor6.setChecked(false);
                 }
@@ -380,7 +381,7 @@ public class MainActivity extends AppCompatActivity {
                     SmartCampusLayers.quePlanta(mMapView,19);//plano
                     SmartCampusLayers.quePlanta(mMapView,20);//Interior Spaces
 
-                    tgFloor0.setChecked(false);tgFloorS.setChecked(false);tgFloor2.setChecked(false);
+                    tgFloor0.setChecked(false);tgFloor1.setChecked(false);tgFloor2.setChecked(false);
                     tgFloor3.setChecked(false);tgFloor4.setChecked(false);tgFloorS.setChecked(false);
                     tgFloor6.setChecked(false);
                 }
@@ -395,7 +396,7 @@ public class MainActivity extends AppCompatActivity {
                     SmartCampusLayers.quePlanta(mMapView,22);//plano
                     SmartCampusLayers.quePlanta(mMapView,23);//Interior Spaces
 
-                    tgFloor0.setChecked(false);tgFloorS.setChecked(false);tgFloor2.setChecked(false);
+                    tgFloor0.setChecked(false);tgFloor1.setChecked(false);tgFloor2.setChecked(false);
                     tgFloor3.setChecked(false);tgFloor4.setChecked(false);tgFloor5.setChecked(false);
                     tgFloorS.setChecked(false);
                 }
